@@ -151,6 +151,36 @@
 
   mountOfficialPricing();
 
+  var form = document.getElementById("bundle-form");
+  var separateEl = document.querySelector("[data-separate]");
+  var bundleEl = document.querySelector("[data-bundle]");
+  var saveEl = document.querySelector("[data-save]");
+
+  function money(cents) {
+    return "US$" + (cents / 100).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function updateBundle() {
+    if (!form || !separateEl || !bundleEl || !saveEl) return;
+    var returns = form.querySelector('input[name="returns"]:checked');
+    var tracking = form.querySelector('input[name="tracking"]:checked');
+    if (!returns || !tracking) return;
+    var monthly = Number(returns.value) + Number(tracking.value);
+    var annual = monthly * 12 * 100;
+    var bundle = Math.round(annual * 0.95);
+    separateEl.textContent = money(annual);
+    bundleEl.textContent = money(bundle);
+    saveEl.textContent = money(annual - bundle);
+  }
+
+  if (form) {
+    form.addEventListener("change", updateBundle);
+    updateBundle();
+  }
+
   function copyText(code, done) {
     function fallbackCopy() {
       var area = document.createElement("textarea");
@@ -191,16 +221,29 @@
   var stats = document.querySelector("#numbers .stats");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var statRollCss = [
+    ":host{position:relative;display:block}",
+    ".stat-roll{position:absolute;top:0;left:0;display:inline-flex;align-items:flex-end;height:1.15em;white-space:nowrap;pointer-events:none;user-select:none}",
+    ".stat-digit{position:relative;flex:0 0 auto;width:1ch;height:1.15em;overflow:clip;line-height:1.15}",
+    ".stat-digit-strip{position:absolute;top:0;left:0;display:flex;flex-direction:column;width:100%;margin:0;transform:translateY(0);transition:transform 1400ms cubic-bezier(0.16,0.55,0.24,1);transition-delay:calc(var(--stat-i,0)*90ms + var(--digit-i,0)*45ms)}",
+    ".stat-digit-strip>span{display:block;height:1.15em;line-height:1.15;flex:0 0 1.15em}",
+    ".stat-mark,.stat-suffix{height:1.15em;line-height:1.15;flex:0 0 auto}",
+    ".stat-suffix{white-space:pre}",
+    ":host-context(.stats.is-in) .stat-digit-strip{transform:translateY(calc(var(--roll) / (var(--roll) + 1) * -100%))}",
+    "@media (prefers-reduced-motion:reduce){.stat-digit-strip{transition:none;transform:translateY(calc(var(--roll) / (var(--roll) + 1) * -100%))}}"
+  ].join("");
+
   function mountStatRolls(list) {
     var values = list.querySelectorAll(".stat-value");
     Array.prototype.forEach.call(values, function (el) {
       var raw = (el.textContent || "").replace(/\s+/g, " ").trim();
       var match = raw.match(/^(\d+(?:\.\d+)?)(.*)$/);
-      if (!match) return;
+      if (!match || el.shadowRoot) return;
       var figure = match[1];
       var suffix = match[2];
+      var item = el.closest("li");
+      var statIndex = item ? Array.prototype.indexOf.call(list.children, item) : 0;
       var roll = document.createElement("span");
-      var readable = document.createElement("span");
       var digitIndex = 0;
       roll.className = "stat-roll";
       roll.setAttribute("aria-hidden", "true");
@@ -210,6 +253,7 @@
         if (ch < "0" || ch > "9") {
           var mark = document.createElement("span");
           mark.className = "stat-mark";
+          mark.setAttribute("aria-hidden", "true");
           mark.textContent = ch;
           roll.appendChild(mark);
           continue;
@@ -218,13 +262,17 @@
         var cell = document.createElement("span");
         var strip = document.createElement("span");
         cell.className = "stat-digit";
+        cell.setAttribute("aria-hidden", "true");
         strip.className = "stat-digit-strip";
+        strip.setAttribute("aria-hidden", "true");
         strip.style.setProperty("--roll", String(steps));
         strip.style.setProperty("--digit-i", String(digitIndex));
+        strip.style.setProperty("--stat-i", String(statIndex));
         digitIndex += 1;
         for (var step = 0; step <= steps; step++) {
           var glyph = document.createElement("span");
           glyph.textContent = String(step % 10);
+          glyph.setAttribute("aria-hidden", "true");
           strip.appendChild(glyph);
         }
         cell.appendChild(strip);
@@ -234,15 +282,22 @@
       if (suffix) {
         var tail = document.createElement("span");
         tail.className = "stat-suffix";
+        tail.setAttribute("aria-hidden", "true");
         tail.textContent = suffix;
         roll.appendChild(tail);
       }
 
-      readable.className = "sr-only";
-      readable.textContent = raw;
+      var finalText = document.createElement("span");
+      finalText.className = "stat-final";
+      finalText.textContent = raw;
       el.textContent = "";
-      el.appendChild(roll);
-      el.appendChild(readable);
+      el.appendChild(finalText);
+      var shadow = el.attachShadow({ mode: "open" });
+      var style = document.createElement("style");
+      var slot = document.createElement("slot");
+      style.textContent = statRollCss;
+      shadow.append(style, roll, slot);
+      el.classList.add("has-roll");
     });
   }
 
@@ -306,7 +361,6 @@
 
   function mountOfficialPricing() {
     var stage = document.getElementById("plans-stage");
-    var lead = document.getElementById("plans-lead");
     var indicator = document.getElementById("plans-indicator");
     var tabs = document.querySelector(".price-tabs-track");
     if (!stage || !tabs) return;
@@ -334,7 +388,6 @@
 
     var catalog = {
       tracking: {
-        lead: "Annual plans offer 20% savings on monthly rates.",
         href: shopify,
         cta: "Get Started",
         quotaLabel: "shipments",
@@ -421,7 +474,6 @@
         }
       },
       returns: {
-        lead: "Pay based on monthly return volume. Upgrade or downgrade anytime. Save ~18% with annual billing.",
         href: returnsHref,
         cta: "Start Free Trial",
         quotaLabel: "Returns / Month",
@@ -499,7 +551,6 @@
         }
       },
       api: {
-        lead: "Each plan is valid for 12 months.",
         href: apiHref,
         cta: "Get Started",
         cards: [
@@ -765,7 +816,6 @@
         panel.hidden = !on;
         if (on && indicator) indicator.style.setProperty("--i", String(index));
       });
-      if (lead) lead.textContent = catalog[productId].lead;
     }
 
     stage.replaceChildren();
