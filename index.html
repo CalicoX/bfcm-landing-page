@@ -1,1537 +1,474 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BFCM 2026</title>
+  <title>Black Friday 2026 — 17TRACK</title>
+  <meta name="description" content="17TRACK Black Friday 2026. Official Order Tracking, 17RETURNS, and API pricing, plus the returns readiness report.">
   <link rel="stylesheet" href="assets/fonts/fonts.css">
-  <style>
-    :root {
-      --page: #f1f1f1;
-      --ink: #1c1c1c;
-      --ink-2: #333333;
-      --text: #303030;
-      --muted: #b5b5b5;
-      --sub-cool: #cbd5e1;
-      --colon: #e3e3e3;
-      --gold: #ffb657;
-      --gold-mid: #ffe99d;
-      --gold-deep: #db9350;
-      --font: Inter, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--page);
-      color: var(--text);
-      font-family: var(--font);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .chrome,
-    .page {
-      width: min(950px, calc(100% - 32px));
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .chrome { margin-top: 40px; }
-
-    .page {
-      margin-top: 20px;
-      padding-bottom: 72px;
-    }
-
-    .page[data-adapt="tablet"] { width: min(768px, calc(100% - 32px)); }
-    .page[data-adapt="mobile"] { width: min(390px, calc(100% - 32px)); }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px 16px;
-    }
-
-    .tabs {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 4px;
-      width: max-content;
-      max-width: 100%;
-      margin: 0;
-      padding: 4px;
-      overflow-x: auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
-      scrollbar-width: none;
-    }
-
-    .tabs::-webkit-scrollbar { display: none; }
-
-    .tabs button {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: #616161;
-      font-family: inherit;
-      font-weight: 550;
-      font-size: 13px;
-      line-height: 20px;
-      flex: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .tabs button:hover:not([aria-selected="true"]) {
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--text);
-    }
-
-    .tabs button[aria-selected="true"] {
-      background: var(--ink);
-      color: #fff;
-    }
-
-    .adapt-size {
-      margin-left: 6px;
-      font-weight: 450;
-      font-size: 12px;
-      letter-spacing: 0;
-      opacity: 0.55;
-    }
-
-    .tabs button[aria-selected="true"] .adapt-size { opacity: 0.78; }
-
-    .tabs button:focus-visible {
-      outline: 2px solid var(--ink);
-      outline-offset: 2px;
-    }
-
-    .stack {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .banner {
-      container-type: inline-size;
-      container-name: banner;
-      position: relative;
-      overflow: hidden;
-      border-radius: 12px;
-      border: 1px solid #fff0bf;
-      background: linear-gradient(90deg, #1c1c1c 0%, #333333 100%);
-    }
-
-    .glow {
-      position: absolute;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .glow-left {
-      width: 780px;
-      height: 780px;
-      left: -340px;
-      top: -300px;
-    }
-
-    .glow-center {
-      width: 240px;
-      height: 240px;
-      left: 42%;
-      top: -30px;
-    }
-
-    .watermark {
-      position: absolute;
-      z-index: 1;
-      left: 50%;
-      top: -4.1cqw;
-      transform: translateX(-50%);
-      margin: 0;
-      font-family: Kameron, "Times New Roman", serif;
-      font-weight: 700;
-      font-size: 19.035cqw;
-      line-height: 1.2;
-      letter-spacing: -0.037em;
-      white-space: nowrap;
-      color: transparent;
-      -webkit-text-stroke: 0.22cqw #ffffa2;
-      opacity: 0.06;
-      pointer-events: none;
-      user-select: none;
-      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
-      mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
-    }
-
-    .banner-b .watermark { top: -2cqw; }
-
-    .banner-body {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px;
-    }
-
-    .copy {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-    }
-
-    .art {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 140px;
-      pointer-events: none;
-    }
-
-    .title-line {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .title {
-      margin: 0;
-      min-width: 0;
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 32px;
-      letter-spacing: -0.2px;
-      background: linear-gradient(90deg, #ffffff 0%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-
-    .banner-b .title {
-      font-weight: 650;
-      font-size: 20px;
-      line-height: 24px;
-      white-space: pre-line;
-    }
-
-    .sparkle {
-      display: block;
-      width: 29px;
-      height: 29px;
-      flex: none;
-    }
-
-    .offer-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 14px;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-    }
-
-    .banner-b .offer-row { margin-top: 3px; }
-
-    .sub {
-      margin: 0;
-      display: block;
-      flex: 0 1 auto;
-      width: auto;
-      max-width: 100%;
-      min-width: 0;
-      color: #cbd5e1;
-      font-weight: 550;
-      font-size: 13px;
-      line-height: 20px;
-    }
-
-    .sub-line {
-      display: block;
-      max-width: 100%;
-      min-width: 0;
-    }
-
-    @container banner (min-width: 700px) {
-      .offer-row { flex-wrap: nowrap; }
-    }
-
-    .offer {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: none;
-      gap: 6.316px;
-      padding: 1.263px 5.053px;
-      border-radius: 18.316px;
-      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 50%, var(--gold-deep) 100%);
-      color: #000;
-      font-family: "Libre Baskerville", "Songti SC", "Noto Serif SC", serif;
-      font-style: italic;
-      font-weight: 700;
-      font-size: 12.632px;
-      line-height: 28.421px;
-      white-space: nowrap;
-    }
-
-    .offer span:empty { display: none; }
-
-    .offer-num {
-      font-size: 20.211px;
-      line-height: 28.421px;
-    }
-
-    .gift,
-    .piece {
-      position: absolute;
-      display: block;
-      object-fit: contain;
-    }
-
-    .gift {
-      left: 50%;
-      top: 50%;
-      width: 120px;
-      height: 120px;
-      transform: translate(-50%, -50%);
-    }
-
-    .banner-b .gift {
-      width: 128px;
-      height: 128px;
-      transform: translate(-50%, -50%) rotate(15deg);
-    }
-
-    .piece-a {
-      left: calc(50% - 74px);
-      top: 22px;
-      width: 42px;
-      height: 40px;
-    }
-
-    .piece-b {
-      left: calc(50% + 28px);
-      top: 16px;
-      width: 36.12px;
-      height: 33.98px;
-      transform: rotate(75deg);
-    }
-
-    .banner-b .piece-b {
-      width: 43.46px;
-      height: 40.88px;
-    }
-
-    .timer {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: max-content;
-      max-width: 100%;
-    }
-
-    .timer-label {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      color: #fff;
-      font-weight: 550;
-      font-size: 13px;
-      line-height: 20px;
-      white-space: nowrap;
-    }
-
-    .timer-label img {
-      width: 20px;
-      height: 20px;
-      flex: none;
-    }
-
-    .clock {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .ticks,
-    .units {
-      display: grid;
-      grid-template-columns: 40px 30px 40px 30px 40px 30px 40px;
-      align-items: center;
-    }
-
-    .tick {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      background: #fff;
-      color: var(--text);
-      font-weight: 650;
-      font-size: 20px;
-      line-height: 24px;
-      letter-spacing: -0.2px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .colon {
-      text-align: center;
-      color: var(--colon);
-      font-weight: 650;
-      font-size: 20px;
-      line-height: 24px;
-      letter-spacing: -0.2px;
-    }
-
-    .units span {
-      text-align: center;
-      color: var(--muted);
-      font-weight: 450;
-      font-size: 12px;
-      line-height: 16px;
-    }
-
-    @container banner (max-width: 699px) {
-      .ticks,
-      .units {
-        grid-template-columns: 34px 16px 34px 16px 34px 16px 34px;
-      }
-
-      .tick {
-        width: 34px;
-        height: 34px;
-        font-size: 16px;
-        border-radius: 7px;
-      }
-
-      .colon { font-size: 16px; }
-
-      .art {
-        position: absolute;
-        top: auto;
-        left: auto;
-        right: 0;
-        bottom: 0;
-        width: 180px;
-        height: 140px;
-      }
-
-      .banner-b .art { right: 8px; bottom: 18px; }
-    }
-
-    @container banner (min-width: 700px) and (max-width: 919px) {
-      .banner-body {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 108px 250px;
-        grid-template-areas: "copy art timer";
-        align-items: center;
-        column-gap: 10px;
-        row-gap: 0;
-        padding: 18px 16px 18px 20px;
-      }
-
-      .copy { grid-area: copy; width: auto; }
-      .banner-b .copy { padding-right: 8px; }
-      .art {
-        grid-area: art;
-        width: 108px;
-        height: 120px;
-        justify-self: center;
-      }
-      .timer { grid-area: timer; justify-self: end; }
-
-      .gift { width: 100px; height: 100px; }
-      .banner-b .gift { width: 108px; height: 108px; }
-
-      .piece-a {
-        left: -4px;
-        top: 22px;
-        width: 32px;
-        height: 30px;
-      }
-
-      .piece-b {
-        left: auto;
-        right: -6px;
-        top: 10px;
-        width: 30px;
-        height: 28px;
-      }
-
-      .banner-b .piece-b { width: 34px; height: 32px; }
-    }
-
-    @container banner (min-width: 920px) {
-      .banner-body {
-        display: block;
-        min-height: 124px;
-        padding: 26px 24px 16px;
-      }
-
-      .banner-b .banner-body { min-height: 163px; }
-
-      .banner-a .copy { max-width: 454px; }
-      .banner-b .copy { max-width: 428px; }
-      .banner-a .title { white-space: nowrap; }
-
-      .glow-left {
-        width: 982px;
-        height: 982px;
-        left: -467px;
-        top: -434px;
-      }
-
-      .glow-center {
-        width: 288px;
-        height: 288px;
-        left: 419px;
-        top: -48px;
-      }
-
-      .art {
-        position: absolute;
-        inset: 0;
-        width: auto;
-        height: auto;
-      }
-
-      .timer {
-        position: absolute;
-        top: 15px;
-        right: 34px;
-        width: 250px;
-      }
-
-      .banner-b .timer { top: 36px; }
-
-      .banner-a .gift {
-        left: 506px;
-        top: 3px;
-        width: 128px;
-        height: 128px;
-        transform: none;
-      }
-
-      .banner-a .piece-a {
-        left: 492px;
-        top: 18px;
-        width: 42px;
-        height: 40px;
-        transform: none;
-      }
-
-      .banner-a .piece-b {
-        left: 637.42px;
-        top: 21.15px;
-        right: auto;
-        width: 36.12px;
-        height: 33.98px;
-        transform: rotate(75deg);
-      }
-
-      .banner-b .gift {
-        left: 517.44px;
-        top: 30.18px;
-        width: 143.98px;
-        height: 143.98px;
-        transform: rotate(15deg);
-      }
-
-      .banner-b .piece-a {
-        left: 464px;
-        top: 36px;
-        width: 42px;
-        height: 40px;
-        transform: none;
-      }
-
-      .banner-b .piece-b {
-        left: 632.13px;
-        top: 29.84px;
-        right: auto;
-        width: 43.46px;
-        height: 40.88px;
-        transform: rotate(75deg);
-      }
-    }
-
-    .banner-cta {
-      appearance: none;
-      position: relative;
-      z-index: 4;
-      display: inline-block;
-      max-width: 100%;
-      margin-top: 12px;
-      padding: 10px 16px;
-      border: 0;
-      border-radius: 999px;
-      background: #eaf4ff;
-      color: #303030;
-      font-family: inherit;
-      font-weight: 550;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      white-space: normal;
-      cursor: pointer;
-    }
-
-    .banner-cta:hover { background: #dcedff; }
-
-    .banner-cta:focus-visible {
-      outline: 2px solid #ffb657;
-      outline-offset: 2px;
-    }
-
-    @container banner (max-width: 420px) {
-      .banner-cta { margin-top: 10px; margin-bottom: 6px; }
-    }
-
-    body.modal-open { overflow: hidden; }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 30;
-      display: grid;
-      place-items: center;
-      padding: 16px;
-    }
-
-    .modal[hidden] { display: none; }
-
-    .modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(12, 12, 12, 0.62);
-    }
-
-    .modal-panel {
-      container-type: inline-size;
-      container-name: modal;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      width: min(620px, 100%);
-      max-height: calc(100vh - 32px);
-      max-height: calc(100dvh - 32px);
-      overflow: hidden;
-      border-radius: 20px;
-      background: linear-gradient(180deg, #1a1a1a 0%, #353535 100%);
-      box-shadow:
-        0 20px 20px -8px rgba(26, 26, 26, 0.28),
-        inset 0 1px 0 rgba(204, 204, 204, 0.5),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.17),
-        inset 1px 0 0 rgba(0, 0, 0, 0.13),
-        inset -1px 0 0 rgba(0, 0, 0, 0.17);
-      color: #fff;
-    }
-
-    body[data-adapt="mobile"] .modal-panel {
-      width: min(358px, 100%);
-    }
-
-    .modal-mark {
-      position: absolute;
-      z-index: 0;
-      left: 50%;
-      top: -55px;
-      transform: translateX(-50%);
-      margin: 0;
-      font-family: Kameron, "Times New Roman", serif;
-      font-weight: 700;
-      font-size: 217.568px;
-      line-height: 261.082px;
-      letter-spacing: -8.05px;
-      white-space: nowrap;
-      color: transparent;
-      -webkit-text-stroke: 2.5px #ffffa2;
-      opacity: 0.1;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .modal-glow {
-      position: absolute;
-      z-index: 0;
-      left: 0;
-      top: calc(50% - 303px);
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
-
-    .modal-glow img {
-      position: absolute;
-      max-width: none;
-      transform: translate(-50%, -50%);
-    }
-
-    .modal-close {
-      position: absolute;
-      z-index: 3;
-      top: 12px;
-      right: 12px;
-      display: grid;
-      place-items: center;
-      width: 28px;
-      height: 28px;
-      padding: 4px;
-      border: 0;
-      border-radius: 8px;
-      background: transparent;
-      cursor: pointer;
-    }
-
-    .modal-close img { display: block; }
-
-    .modal-close:hover { background: rgba(255, 255, 255, 0.08); }
-
-    .modal-close:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
-    }
-
-    .modal-scroll {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      min-height: 0;
-      overflow: auto;
-      overscroll-behavior: contain;
-      padding: 40px 32px;
-    }
-
-    .modal-panel[data-variant="live"] [data-panel="ending"],
-    .modal-panel[data-variant="ending"] [data-panel="live"] {
-      display: none;
-    }
-
-    .modal-live,
-    .modal-ending {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .modal-live { gap: 16px; }
-    .modal-ending { gap: 4px; }
-
-    .modal-head {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .modal-head-live { gap: 8px; }
-
-    .modal-title {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      max-width: 100%;
-      margin: 0;
-      font-weight: 700;
-      font-size: 30px;
-      line-height: 40px;
-      letter-spacing: -0.3px;
-      text-align: center;
-      color: #fff;
-    }
-
-    .modal-title-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      column-gap: 6px;
-      row-gap: 0;
-      max-width: 100%;
-    }
-
-    .modal-title-row .sparkle { margin-top: 0; }
-
-    .modal-gold {
-      background-image: linear-gradient(90deg, #ffe99d 0%, #db9350 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-
-    .modal-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 29px;
-      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 50%, var(--gold-deep) 100%);
-      color: #303030;
-      text-align: center;
-    }
-
-    .modal-pill-live {
-      position: relative;
-      padding: 11.174px 13.968px 6.984px;
-      border-radius: 40.506px;
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 17px;
-    }
-
-    .modal-pill-end {
-      padding: 4px 10px;
-      font-weight: 550;
-      font-size: 13px;
-      line-height: 20px;
-    }
-
-    .modal-badge-img { display: block; }
-
-    html[lang="en"] .modal-live-badge-text {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    html:not([lang="en"]) .modal-badge-img { display: none; }
-
-    html:not([lang="en"]) .modal-pill-live {
-      padding: 9px 16px;
-      border-radius: 40.506px;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 24px;
-    }
-
-    .modal-copy {
-      max-width: 556px;
-      margin: 0;
-      color: rgba(203, 213, 225, 0.9);
-      font-weight: 450;
-      font-size: 13px;
-      line-height: 20px;
-      text-align: center;
-    }
-
-    .modal-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      width: 100%;
-      padding: 16px;
-      border: 0;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
-    }
-
-    .modal-card-label {
-      margin: 0;
-      color: rgba(203, 213, 225, 0.9);
-      font-weight: 450;
-      font-size: 13px;
-      line-height: 20px;
-      text-align: center;
-    }
-
-    .modal-clock {
-      display: grid;
-      grid-template-columns: 56px 30px 56px 30px 56px 30px 56px;
-      align-items: center;
-      justify-content: center;
-      justify-items: center;
-      row-gap: 6px;
-      max-width: 100%;
-    }
-
-    .modal-tick {
-      display: grid;
-      place-items: center;
-      width: 56px;
-      height: 56px;
-      border-radius: 8px;
-      background: #fff;
-      color: #303030;
-      font-weight: 700;
-      font-size: 30px;
-      line-height: 40px;
-      letter-spacing: -0.3px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .modal-colon {
-      color: #e3e3e3;
-      font-weight: 650;
-      font-size: 20px;
-      line-height: 24px;
-      letter-spacing: -0.2px;
-    }
-
-    .modal-unit {
-      color: #b5b5b5;
-      font-weight: 450;
-      font-size: 12px;
-      line-height: 16px;
-      text-align: center;
-    }
-
-    .modal-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      width: 100%;
-    }
-
-    .modal-later,
-    .modal-go {
-      appearance: none;
-      max-width: 100%;
-      padding: 12px 16px;
-      white-space: normal;
-      border: 0;
-      border-radius: 999px;
-      font-family: inherit;
-      font-weight: 550;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .modal-later {
-      background: transparent;
-      color: #b5b5b5;
-    }
-
-    .modal-later:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
-
-    .modal-go {
-      background: #eaf4ff;
-      color: #303030;
-    }
-
-    .modal-go:hover { background: #dcedff; }
-
-    .modal-later:focus-visible,
-    .modal-go:focus-visible {
-      outline: 2px solid #ffb657;
-      outline-offset: 2px;
-    }
-
-    @container modal (max-width: 520px) {
-      .modal-scroll { padding: 36px 16px 20px; }
-      .modal-title {
-        font-size: 24px;
-        line-height: 32px;
-        letter-spacing: -0.24px;
-      }
-      .modal-clock {
-        grid-template-columns: 46px 14px 46px 14px 46px 14px 46px;
-      }
-      .modal-tick {
-        width: 46px;
-        height: 46px;
-        font-size: 22px;
-        line-height: 28px;
-        border-radius: 7px;
-      }
-      .modal-copy br { display: none; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23003a9b'/%3E%3C/svg%3E">
 </head>
 <body>
-  <header class="chrome">
-    <h1 class="sr-only">BFCM 2026</h1>
-    <div class="toolbar">
-      <div class="tabs" role="tablist" aria-label="Language">
-        <button type="button" role="tab" id="tab-zh" data-lang="zh" aria-selected="true" aria-controls="banners">中文</button>
-        <button type="button" role="tab" id="tab-en" data-lang="en" aria-selected="false" aria-controls="banners" tabindex="-1">English</button>
-        <button type="button" role="tab" id="tab-fr" data-lang="fr" aria-selected="false" aria-controls="banners" tabindex="-1">Français</button>
-        <button type="button" role="tab" id="tab-pt" data-lang="pt" aria-selected="false" aria-controls="banners" tabindex="-1">Português</button>
-        <button type="button" role="tab" id="tab-es" data-lang="es" aria-selected="false" aria-controls="banners" tabindex="-1">Español</button>
-      </div>
-      <div class="tabs" role="tablist" aria-label="适配">
-        <button type="button" role="tab" id="adapt-desktop" data-adapt="desktop" aria-selected="true" aria-controls="banners">桌面<span class="adapt-size">950</span></button>
-        <button type="button" role="tab" id="adapt-tablet" data-adapt="tablet" aria-selected="false" aria-controls="banners" tabindex="-1">平板<span class="adapt-size">768</span></button>
-        <button type="button" role="tab" id="adapt-mobile" data-adapt="mobile" aria-selected="false" aria-controls="banners" tabindex="-1">手机<span class="adapt-size">390</span></button>
-      </div>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="top" data-top>
+    <div class="promo" id="promo" data-promo>
+      <p class="promo-line">
+        <span class="promo-item" data-promo-item>
+          <span>Returns hurting your margins? Recover more revenue with 17RETURNS.</span>
+          <a href="https://www.17returns.com?utm_source=www.17track.com&amp;utm_medium=banner&amp;utm_campaign=top_banner" target="_blank" rel="nofollow noopener">17returns.com <i aria-hidden="true">&gt;</i></a>
+        </span>
+        <span class="promo-item" data-promo-item hidden>
+          <span>Looking to track a personal package? Visit our free tracking tool</span>
+          <a href="https://www.17track.net/en" target="_blank" rel="nofollow noopener">17track.net <i aria-hidden="true">&gt;</i></a>
+        </span>
+      </p>
+      <button class="promo-close" type="button" data-promo-close aria-label="Close banner">×</button>
     </div>
-  </header>
-  <main class="page" id="banners" data-adapt="desktop">
-    <div class="stack">
-      <article class="banner banner-a">
-        <img class="glow glow-left" src="assets/glow-left.svg" alt="">
-        <img class="glow glow-center" src="assets/glow-center.svg" alt="">
-        <p class="watermark" aria-hidden="true">BFCM2026</p>
-        <div class="banner-body">
-          <div class="copy">
-            <div class="title-line">
-              <h2 class="title" data-t="a.title"></h2>
-              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
-            </div>
-            <div class="offer-row">
-              <p class="sub">
-                <span class="sub-line" data-t="a.sub1"></span>
-                <span class="sub-line" data-t="a.sub2"></span>
-              </p>
-              <span class="offer">
-                <span data-t="offer.pre"></span>
-                <span class="offer-num" data-t="offer.num"></span>
-                <span data-t="offer.post"></span>
-              </span>
-            </div>
-            <button type="button" class="banner-cta" data-modal="live" data-t="modal.cta"></button>
-          </div>
-          <div class="art" aria-hidden="true">
-            <img class="gift" src="assets/gift.png" alt="">
-            <img class="piece piece-a" src="assets/confetti.png" alt="">
-            <img class="piece piece-b" src="assets/confetti.png" alt="">
-          </div>
-          <div class="timer">
-            <div class="timer-label">
-              <img src="assets/clock.svg" alt="">
-              <span data-t="timer"></span>
-            </div>
-            <div class="clock">
-              <div class="ticks">
-                <b class="tick" data-part="d">47</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="h">20</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="m">34</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="s">29</b>
-              </div>
-              <div class="units">
-                <span data-t="units.d"></span>
-                <span></span>
-                <span data-t="units.h"></span>
-                <span></span>
-                <span data-t="units.m"></span>
-                <span></span>
-                <span data-t="units.s"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
 
-      <article class="banner banner-b">
-        <img class="glow glow-left" src="assets/glow-left.svg" alt="">
-        <img class="glow glow-center" src="assets/glow-center.svg" alt="">
-        <p class="watermark" aria-hidden="true">BFCM2026</p>
-        <div class="banner-body">
-          <div class="copy">
-            <div class="title-line">
-              <h2 class="title" data-t="b.title"></h2>
-              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
-            </div>
-            <div class="offer-row">
-              <p class="sub">
-                <span class="sub-line" data-t="b.sub1"></span>
-                <span class="sub-line" data-t="b.sub2"></span>
-              </p>
-              <span class="offer">
-                <span data-t="offer.pre"></span>
-                <span class="offer-num" data-t="offer.num"></span>
-                <span data-t="offer.post"></span>
-              </span>
-            </div>
-            <button type="button" class="banner-cta" data-modal="ending" data-t="modal.cta"></button>
-          </div>
-          <div class="art" aria-hidden="true">
-            <img class="gift" src="assets/gift.png" alt="">
-            <img class="piece piece-a" src="assets/confetti.png" alt="">
-            <img class="piece piece-b" src="assets/confetti.png" alt="">
-          </div>
-          <div class="timer">
-            <div class="timer-label">
-              <img src="assets/clock.svg" alt="">
-              <span data-t="timer"></span>
-            </div>
-            <div class="clock">
-              <div class="ticks">
-                <b class="tick" data-part="d">47</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="h">20</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="m">34</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="s">29</b>
+    <header class="site-header">
+      <div class="canvas header-bar">
+        <a class="logo" href="https://www.17track.com/en" target="_blank" rel="noopener">
+          <img src="assets/logo.svg" alt="17TRACK" width="120" height="20">
+        </a>
+        <nav id="site-nav" class="site-nav" data-nav aria-label="Main">
+          <ul class="nav-links">
+            <li class="nav-item">
+              <button class="nav-link" type="button" aria-expanded="false" aria-controls="menu-products" data-menu-button>
+                Products
+                <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="menu-products" class="nav-menu" hidden>
+                <ul>
+                  <li>
+                    <a href="https://www.17track.com/en/products/tracking" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Tracking</span>
+                      <span class="nav-menu-desc">Precise global tracking to minimize "Where Is My Order?" inquiries</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/products/notifications" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Notifications</span>
+                      <span class="nav-menu-desc">Automated updates to keep customers informed</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/products/returns" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Returns <span class="nav-badge">New</span></span>
+                      <span class="nav-menu-desc">AI-powered 24/7 automated returns &amp; exchanges — turn every return into a growth opportunity.</span>
+                    </a>
+                  </li>
+                </ul>
               </div>
-              <div class="units">
-                <span data-t="units.d"></span>
-                <span></span>
-                <span data-t="units.h"></span>
-                <span></span>
-                <span data-t="units.m"></span>
-                <span></span>
-                <span data-t="units.s"></span>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" type="button" aria-expanded="false" aria-controls="menu-resources" data-menu-button>
+                Resources
+                <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="menu-resources" class="nav-menu" hidden>
+                <ul>
+                  <li>
+                    <a href="https://www.17track.com/en/carriers" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Carriers</span>
+                      <span class="nav-menu-desc">3,500+ carriers for seamless global shipping</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/integration" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Partnership &amp; Integration</span>
+                      <span class="nav-menu-desc">Fast integration with e-commerce tools for efficiency</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://extcall.17track.net/en?utm_source=www.17track.com&amp;utm_medium=menus&amp;utm_campaign=header" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Tracking Widget</span>
+                      <span class="nav-menu-desc">One-click embed for real-time store tracking</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/user-case" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">User Cases</span>
+                      <span class="nav-menu-desc">Case studies reveal how brands achieve success</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/reports" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Reports</span>
+                      <span class="nav-menu-desc">Real logistics data and deep analysis to reveal cross-border market changes, risks, and emerging opportunities.</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.17track.com/en/blog" target="_blank" rel="noopener">
+                      <span class="nav-menu-title">Blog &amp; Insights</span>
+                      <span class="nav-menu-desc">Focused on global e-commerce and logistics trends, delivering actionable insights and growth ideas.</span>
+                    </a>
+                  </li>
+                </ul>
               </div>
-            </div>
+            </li>
+            <li>
+              <a class="nav-link" href="https://www.17track.net/en/api?utm_source=www.17track.com&amp;utm_medium=menus&amp;utm_campaign=header" target="_blank" rel="noopener">Developer</a>
+            </li>
+            <li>
+              <a class="nav-link" href="https://www.17track.com/en/pricing" target="_blank" rel="noopener">Pricing</a>
+            </li>
+          </ul>
+          <div class="nav-actions nav-actions-menu">
+            <a class="btn btn-teal btn-header" href="https://www.17track.com/en/products" target="_blank" rel="noopener">Start Free Trial</a>
+            <a class="btn btn-primary btn-header" href="https://www.17track.com/en/contact-us" target="_blank" rel="noopener">Book a Demo</a>
           </div>
+        </nav>
+        <div class="nav-actions nav-actions-bar">
+          <a class="btn btn-teal btn-header" href="https://www.17track.com/en/products" target="_blank" rel="noopener">Start Free Trial</a>
+          <a class="btn btn-primary btn-header" href="https://www.17track.com/en/contact-us" target="_blank" rel="noopener">Book a Demo</a>
         </div>
-      </article>
-    </div>
-  </main>
-
-  <div class="modal" id="plan-modal" hidden>
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title-live" tabindex="-1" data-variant="live">
-      <p class="modal-mark" aria-hidden="true">BFCM</p>
-      <div class="modal-glow" aria-hidden="true">
-        <img src="assets/modal-glow.svg" alt="">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+          <span class="sr-only">Menu</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        </button>
       </div>
-      <button type="button" class="modal-close" data-close>
-        <img src="assets/modal-close.svg" alt="">
-        <span class="sr-only" data-t="modal.close"></span>
-      </button>
-      <div class="modal-scroll">
-        <div class="modal-live" data-panel="live">
-          <div class="modal-head modal-head-live">
-            <h2 class="modal-title" id="modal-title-live">
-              <span data-t="modal.live.eyebrow"></span>
-              <span class="modal-title-row">
-                <span class="modal-gold" data-t="modal.live.offer"></span>
-                <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
-                <span data-t="modal.live.tail"></span>
-              </span>
-            </h2>
-            <span class="modal-pill modal-pill-live">
-              <img class="modal-badge-img" src="assets/modal-badge.svg" alt="">
-              <span class="modal-live-badge-text" data-t="modal.live.badge"></span>
-            </span>
-          </div>
-          <p class="modal-copy">
-            <span data-t="modal.live.body1"></span><br>
-            <span data-t="modal.live.body2"></span>
-          </p>
-        </div>
-
-        <div class="modal-ending" data-panel="ending">
-          <h2 class="modal-title" id="modal-title-ending">
-            <span class="modal-title-row">
-              <span class="modal-gold" data-t="modal.end.offer"></span>
-              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
-            </span>
-            <span data-t="modal.end.tail"></span>
-          </h2>
-          <span class="modal-pill modal-pill-end" data-t="modal.end.badge"></span>
-          <p class="modal-copy">
-            <span data-t="modal.end.body1"></span><br>
-            <span data-t="modal.end.body2"></span>
-          </p>
-        </div>
-
-        <div class="modal-card" data-panel="ending">
-          <p class="modal-card-label" data-t="timer"></p>
-          <div class="modal-clock">
-            <b class="modal-tick" data-part="d">47</b>
-            <span class="modal-colon">:</span>
-            <b class="modal-tick" data-part="h">20</b>
-            <span class="modal-colon">:</span>
-            <b class="modal-tick" data-part="m">34</b>
-            <span class="modal-colon">:</span>
-            <b class="modal-tick" data-part="s">29</b>
-            <span class="modal-unit" data-t="units.d"></span>
-            <span></span>
-            <span class="modal-unit" data-t="units.h"></span>
-            <span></span>
-            <span class="modal-unit" data-t="units.m"></span>
-            <span></span>
-            <span class="modal-unit" data-t="units.s"></span>
-          </div>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="modal-later" data-close data-t="modal.later"></button>
-          <button type="button" class="modal-go" data-t="modal.cta"></button>
-        </div>
-      </div>
-    </div>
+    </header>
   </div>
 
-  <script>
-    const copy = {
-      zh: {
-        offer: { pre: "最高", num: "35%", post: "优惠" },
-        timer: "距离活动结束",
-        units: { d: "天", h: "时", m: "分", s: "秒" },
-        a: {
-          title: "黑色星期五，升级你的业务",
-          sub1: "折扣自动生效",
-          sub2: "年付方案限时优惠"
-        },
-        b: {
-          title: "黑色星期五即将收官，\n立即锁定全年最低价。",
-          sub1: "最后 72 小时倒计时。",
-          sub2: "错过将恢复原价，不再补货"
-        },
-        modal: {
-          cta: "前往方案与账单",
-          later: "稍后再处理",
-          close: "关闭",
-          live: {
-            eyebrow: "你的专属",
-            offer: "黑色星期五优惠",
-            tail: "现已上线",
-            badge: "最高立减 25%",
-            body1: "今年最大的限时优惠现已开放。",
-            body2: "活动结束后价格将恢复原价，今年不会再有更大的折扣。"
-          },
-          end: {
-            offer: "黑色星期五优惠",
-            tail: "即将结束",
-            badge: "最后机会 · BFCM2026",
-            body1: "时间所剩无几，当前黑色星期五专属优惠即将到期。",
-            body2: "活动结束后价格将恢复原价，今年不会再有更大的折扣。"
-          }
-        }
-      },
-      en: {
-        offer: { pre: "UP TO", num: "35%", post: "OFF" },
-        timer: "Time until the event ends",
-        units: { d: "Days", h: "Hrs", m: "Min", s: "SECS" },
-        a: {
-          title: "Black Friday, upgrade your business",
-          sub1: "Discount applied automatically",
-          sub2: "Limited time offer for annual plan"
-        },
-        b: {
-          title: "Black Friday is coming to a close,\nlock in the year's lowest price now.",
-          sub1: "Last 72 hours countdown.",
-          sub2: "Miss it and the price will revert to the original, no restocking"
-        },
-        modal: {
-          cta: "Go to Plan & Billing",
-          later: "Deal it later",
-          close: "Close",
-          live: {
-            eyebrow: "Your exclusive",
-            offer: "Black Friday offer",
-            tail: "is now live",
-            badge: "Up to 25% OFF",
-            body1: "The biggest limited-time offer of the year is now available.",
-            body2: "After the event ends, prices will return to normal, and there won't be a bigger discount this year."
-          },
-          end: {
-            offer: "Black Friday offer",
-            tail: "is ending soon",
-            badge: "LAST CHANCE · BFCM2026",
-            body1: "Time is running out; the current Black Friday exclusive offer will soon expire.",
-            body2: "After the event ends, prices will return to normal, and there won't be any bigger discounts this year."
-          }
-        }
-      },
-      fr: {
-        offer: { pre: "JUSQU'À", num: "−35%", post: "" },
-        timer: "Temps restant avant la fin",
-        units: { d: "Jours", h: "H", m: "Min", s: "Sec" },
-        a: {
-          title: "Black Friday, boostez votre activité",
-          sub1: "Remise appliquée automatiquement",
-          sub2: "Offre limitée au plan annuel"
-        },
-        b: {
-          title: "Le Black Friday touche à sa fin,\nverrouillez le prix le plus bas de l'année.",
-          sub1: "Compte à rebours des 72 dernières heures.",
-          sub2: "Passé ce délai, retour au prix d'origine, sans réassort"
-        },
-        modal: {
-          cta: "Accéder au plan et à la facturation",
-          later: "Décider plus tard",
-          close: "Fermer",
-          live: {
-            eyebrow: "En exclusivité",
-            offer: "Offre Black Friday",
-            tail: "est en ligne",
-            badge: "Jusqu'à −25 %",
-            body1: "La plus grande offre limitée de l'année est disponible.",
-            body2: "Une fois l'événement terminé, les prix reviendront à la normale, et il n'y aura pas de remise plus importante cette année."
-          },
-          end: {
-            offer: "Offre Black Friday",
-            tail: "se termine bientôt",
-            badge: "DERNIÈRE CHANCE · BFCM2026",
-            body1: "Le temps presse : l'offre exclusive Black Friday expire bientôt.",
-            body2: "Une fois l'événement terminé, les prix reviendront à la normale, et il n'y aura pas de remise plus importante cette année."
-          }
-        }
-      },
-      pt: {
-        offer: { pre: "ATÉ", num: "35%", post: "OFF" },
-        timer: "Tempo até ao fim do evento",
-        units: { d: "Dias", h: "H", m: "Min", s: "Seg" },
-        a: {
-          title: "Black Friday, eleve o seu negócio",
-          sub1: "Desconto aplicado automaticamente",
-          sub2: "Oferta limitada no plano anual"
-        },
-        b: {
-          title: "A Black Friday está a terminar,\ngarante já o preço mais baixo do ano.",
-          sub1: "Contagem decrescente das últimas 72 horas.",
-          sub2: "Se perder, o preço volta ao original, sem reposição"
-        },
-        modal: {
-          cta: "Ir para Plano e faturação",
-          later: "Decidir mais tarde",
-          close: "Fechar",
-          live: {
-            eyebrow: "Em exclusivo",
-            offer: "Oferta Black Friday",
-            tail: "já está disponível",
-            badge: "Até 25% de desconto",
-            body1: "A maior oferta por tempo limitado do ano já está disponível.",
-            body2: "Quando o evento terminar, os preços voltam ao normal e não haverá um desconto maior este ano."
-          },
-          end: {
-            offer: "Oferta Black Friday",
-            tail: "está a terminar",
-            badge: "ÚLTIMA CHANCE · BFCM2026",
-            body1: "O tempo está a esgotar-se: a oferta exclusiva de Black Friday expira em breve.",
-            body2: "Quando o evento terminar, os preços voltam ao normal e não haverá um desconto maior este ano."
-          }
-        }
-      },
-      es: {
-        offer: { pre: "HASTA", num: "35%", post: "OFF" },
-        timer: "Tiempo hasta que termine",
-        units: { d: "Días", h: "H", m: "Min", s: "Seg" },
-        a: {
-          title: "Black Friday, haz crecer tu negocio",
-          sub1: "Descuento aplicado automáticamente",
-          sub2: "Oferta limitada en el plan anual"
-        },
-        b: {
-          title: "El Black Friday está por terminar,\nasegura ya el precio más bajo del año.",
-          sub1: "Cuenta atrás de las últimas 72 horas.",
-          sub2: "Si te lo pierdes, el precio vuelve al original y no se repone"
-        },
-        modal: {
-          cta: "Ir a Plan y facturación",
-          later: "Decidir más tarde",
-          close: "Cerrar",
-          live: {
-            eyebrow: "En exclusiva",
-            offer: "Oferta Black Friday",
-            tail: "ya está activa",
-            badge: "Hasta un 25% de descuento",
-            body1: "La mayor oferta por tiempo limitado del año ya está disponible.",
-            body2: "Cuando termine el evento, los precios volverán a la normalidad y no habrá un descuento mayor este año."
-          },
-          end: {
-            offer: "Oferta Black Friday",
-            tail: "está por terminar",
-            badge: "ÚLTIMA OPORTUNIDAD · BFCM2026",
-            body1: "Se acaba el tiempo: la oferta exclusiva de Black Friday caduca pronto.",
-            body2: "Cuando termine el evento, los precios volverán a la normalidad y no habrá un descuento mayor este año."
-          }
-        }
-      }
-    };
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="canvas hero-grid">
+        <div class="hero-copy">
+          <h1 id="hero-title">This Black Friday, make every parcel worth more.</h1>
+          <p class="lead">Upgrade the post-purchase experience with 17TRACK. Tracking is faster, notifications arrive sooner, and customers stay informed.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#plans">Claim the BFCM offer</a>
+            <a class="btn btn-ghost" href="#report">Read the readiness report</a>
+          </div>
+          <div class="merchant-proof">
+            <ul class="brand-stack">
+              <li><img src="assets/brands/aliexpress.webp" width="238" height="52" alt="AliExpress"></li>
+              <li><img src="assets/brands/anker.webp" width="202" height="48" alt="Anker"></li>
+              <li><img src="assets/brands/eufy.webp" width="124" height="59" alt="eufy"></li>
+              <li><img src="assets/brands/gimi.webp" width="190" height="44" alt="XGIMI"></li>
+              <li><img src="assets/brands/baleaf.webp" width="309" height="59" alt="baleaf"></li>
+              <li><img src="assets/brands/vaporesso.webp" width="342" height="63" alt="VAPORESSO"></li>
+            </ul>
+            <p>Used by merchants shipping to <strong>250+ countries and regions</strong>.</p>
+          </div>
+          <p class="proof">100,000+ merchants already use 17TRACK.</p>
+        </div>
 
-    const htmlLang = { zh: "zh-Hans", en: "en", fr: "fr", pt: "pt", es: "es" };
-    const tabs = [...document.querySelectorAll("[data-lang]")];
-    const adaptTabs = [...document.querySelectorAll("[data-adapt]")];
-    const stage = document.querySelector(".page");
+        <figure class="hero-visual">
+          <img
+            src="assets/bfcm-hero-gifts-2.png?v=2"
+            width="1600"
+            height="900"
+            alt="Two matte gift boxes, navy and cream, with orange satin ribbons, and two cream coupon tickets with perforated edges, a dashed border, and an orange stripe."
+          >
+        </figure>
+      </div>
+    </section>
 
-    function lookup(obj, path) {
-      return path.split(".").reduce((value, key) => value[key], obj);
-    }
+    <section class="section" id="report" aria-labelledby="report-title">
+      <div class="canvas">
+        <header class="section-head">
+          <h2 id="report-title">2026 Black Friday returns readiness report</h2>
+          <p class="lead">From 17TRACK’s global logistics data: what December does to Black Friday orders.</p>
+        </header>
+        <ul class="figures">
+          <li>
+            <p class="figure">2–3×</p>
+            <h3>Return volume peaks in December</h3>
+            <p>The 30 days after Black Friday are the year’s highest return peak. Requests can reach 2–3× a normal day.</p>
+          </li>
+          <li>
+            <p class="figure">30%+</p>
+            <h3>Refunds that can be kept</h3>
+            <p>More than 30% of peak-season returns can stay as revenue through exchanges and store credit.</p>
+          </li>
+          <li>
+            <p class="figure">Minutes</p>
+            <h3>Review, automated</h3>
+            <p>Automation rules compress return handling from 48 hours or more down to minutes, without adding support staff for the peak.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-    function apply(lang) {
-      const t = copy[lang];
-      document.documentElement.lang = htmlLang[lang];
-      document.querySelectorAll("[data-t]").forEach((node) => {
-        node.textContent = lookup(t, node.dataset.t);
-      });
-      tabs.forEach((tab) => {
-        const on = tab.dataset.lang === lang;
-        tab.setAttribute("aria-selected", on ? "true" : "false");
-        tab.tabIndex = on ? 0 : -1;
-      });
-      try { localStorage.setItem("bfcm-lang", lang); } catch (err) {}
-    }
+    <section class="section section-tight" id="prepare" aria-labelledby="prepare-title">
+      <div class="canvas prepare">
+        <div>
+          <h2 id="prepare-title">The three weeks before peak</h2>
+          <p class="lead">A short list for the returns desk, before the volume arrives.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#report-note">Download the full report (PDF)</a>
+          </div>
+          <p class="note" id="report-note" tabindex="-1">The PDF publishes with the campaign. Figures on this page are illustrative. The final report comes from the data team.</p>
+        </div>
+        <ol class="checks">
+          <li>Extend the peak return window so support does not get buried.</li>
+          <li>Turn on auto-approval for low-risk return requests.</li>
+          <li>Offer exchanges and store credit so fewer returns become refunds.</li>
+          <li>Publish a branded returns portal and let buyers start the return themselves.</li>
+          <li>Turn on shipment tracking, with automatic alerts for exceptions.</li>
+          <li>Use analytics to find high-return SKUs before the rush.</li>
+        </ol>
+      </div>
+    </section>
 
-    function pad(n) {
-      return String(n).padStart(2, "0");
-    }
+    <section class="section" id="plans" aria-labelledby="plans-title">
+      <div class="canvas">
+        <header class="section-head">
+          <h2 id="plans-title">Pricing</h2>
+          <p class="lead" id="plans-lead">Annual plans offer 20% savings on monthly rates.</p>
+        </header>
+        <div class="price-tabs">
+          <div class="price-tabs-track" role="tablist" aria-label="Product">
+            <span class="price-tab-indicator" id="plans-indicator" aria-hidden="true"></span>
+            <button type="button" role="tab" id="plans-tab-tracking" aria-selected="true" aria-controls="plans-panel-tracking" data-plan-tab="tracking">Order Tracking</button>
+            <button type="button" role="tab" id="plans-tab-returns" aria-selected="false" aria-controls="plans-panel-returns" data-plan-tab="returns" tabindex="-1">17RETURNS</button>
+            <button type="button" role="tab" id="plans-tab-api" aria-selected="false" aria-controls="plans-panel-api" data-plan-tab="api" tabindex="-1">API</button>
+          </div>
+        </div>
+        <div id="plans-stage">
+          <p class="note"><a href="https://www.17track.com/en/pricing" target="_blank" rel="noopener noreferrer">View pricing on 17TRACK</a></p>
+        </div>
+      </div>
+    </section>
 
-    let deadline;
-    try {
-      const saved = Number(sessionStorage.getItem("bfcm-deadline"));
-      deadline = saved || 0;
-      if (!deadline) {
-        deadline = Date.now() + (((47 * 24 + 20) * 60 + 34) * 60 + 29) * 1000;
-        sessionStorage.setItem("bfcm-deadline", String(deadline));
-      }
-    } catch (err) {
-      deadline = Date.now() + (((47 * 24 + 20) * 60 + 34) * 60 + 29) * 1000;
-    }
+    <section class="section" id="numbers" aria-labelledby="numbers-title">
+      <div class="canvas">
+        <h2 id="numbers-title">17TRACK by the numbers</h2>
+        <ul class="stats">
+          <li>
+            <p class="stat-value">1.5B+</p>
+            <p class="stat-label">Parcel lookups a year</p>
+          </li>
+          <li>
+            <p class="stat-value">250+</p>
+            <p class="stat-label">Countries and regions</p>
+          </li>
+          <li>
+            <p class="stat-value">4.8/5</p>
+            <p class="stat-label">Customer satisfaction</p>
+          </li>
+          <li>
+            <p class="stat-value">10 years</p>
+            <p class="stat-label">In logistics</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-    function tick() {
-      const remain = Math.max(0, deadline - Date.now());
-      const total = Math.floor(remain / 1000);
-      const parts = {
-        d: Math.floor(total / 86400),
-        h: Math.floor((total % 86400) / 3600),
-        m: Math.floor((total % 3600) / 60),
-        s: total % 60
-      };
-      document.querySelectorAll("[data-part]").forEach((node) => {
-        node.textContent = pad(parts[node.dataset.part]);
-      });
-    }
+    <section class="credentials" aria-labelledby="creds-title">
+      <div class="canvas">
+        <h2 id="creds-title">Our Credentials, Your Confidence</h2>
+        <ul class="creds">
+          <li>
+            <img class="cred-badge" src="assets/badge-soc2.png" alt="" width="510" height="508">
+            <div class="cred-copy">
+              <h3>SOC2 Compliance</h3>
+              <p>Providing reliable and secure data management</p>
+            </div>
+          </li>
+          <li>
+            <img class="cred-badge" src="assets/badge-iso27001.png" alt="" width="560" height="516">
+            <div class="cred-copy">
+              <h3>ISO/IEC 27001</h3>
+              <p>Comprehensive global standards for information security</p>
+            </div>
+          </li>
+          <li>
+            <img class="cred-badge" src="assets/badge-iso27701.png" alt="" width="562" height="520">
+            <div class="cred-copy">
+              <h3>ISO/IEC 27701</h3>
+              <p>Comprehensive global standards for information security</p>
+            </div>
+          </li>
+          <li>
+            <img class="cred-badge" src="assets/badge-gdpr.png" alt="" width="516" height="514">
+            <div class="cred-copy">
+              <h3>GDPR Compliance</h3>
+              <p>Safeguarding of data and privacy for European users</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-    function bindTabs(list, select) {
-      list.forEach((tab) => {
-        tab.addEventListener("click", () => select(tab));
-      });
-      list[0].parentElement.addEventListener("keydown", (event) => {
-        const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
-        if (!keys.includes(event.key)) return;
-        event.preventDefault();
-        const current = list.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
-        let next = current;
-        if (event.key === "ArrowRight") next = (current + 1) % list.length;
-        if (event.key === "ArrowLeft") next = (current - 1 + list.length) % list.length;
-        if (event.key === "Home") next = 0;
-        if (event.key === "End") next = list.length - 1;
-        list[next].focus();
-        select(list[next]);
-      });
-    }
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="canvas faq-wrap">
+        <h2 id="faq-title">Questions, answered</h2>
+        <div class="faq">
+          <h3>
+            <button type="button" aria-expanded="false" aria-controls="faq-1" id="faq-q1">When does the Black Friday offer end?</button>
+          </h3>
+          <div id="faq-1" role="region" aria-labelledby="faq-q1" hidden>
+            <p>It runs through November 30, 2026. After that, plan prices return to the regular rate. The next window is a year away.</p>
+          </div>
+          <h3>
+            <button type="button" aria-expanded="false" aria-controls="faq-2" id="faq-q2">Can the code be combined with other offers?</button>
+          </h3>
+          <div id="faq-2" role="region" aria-labelledby="faq-q2" hidden>
+            <p>The prices in this section are the current official 17TRACK rates. They are not a separate Black Friday discount.</p>
+          </div>
+          <h3>
+            <button type="button" aria-expanded="false" aria-controls="faq-3" id="faq-q3">Can I try it before I decide?</button>
+          </h3>
+          <div id="faq-3" role="region" aria-labelledby="faq-q3" hidden>
+            <p>Yes. Free is US $0 a month. Paid plans use the official rates shown above, and you can install 17TRACK on Shopify.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    function applyAdapt(adapt) {
-      stage.dataset.adapt = adapt;
-      document.body.dataset.adapt = adapt;
-      adaptTabs.forEach((tab) => {
-        const on = tab.dataset.adapt === adapt;
-        tab.setAttribute("aria-selected", on ? "true" : "false");
-        tab.tabIndex = on ? 0 : -1;
-      });
-      try { localStorage.setItem("bfcm-adapt", adapt); } catch (err) {}
-    }
+    <section class="close" id="book" aria-labelledby="close-title">
+      <div class="canvas close-inner">
+        <h2 id="close-title">Get the peak season ready. Make every order worth more.</h2>
+        <p class="close-lead">Black Friday is not only a discount. It is the window to lock in a year of logistics efficiency. Upgrade Returns and Tracking now: less lost to refunds, more chance of a repeat order.</p>
+        <p class="code-line">
+          <span class="code-label" id="code-label">Black Friday code</span>
+          <span class="code" id="bfcm-code">BFCM2026</span>
+          <button class="btn btn-on-dark" type="button" data-copy>Copy code</button>
+        </p>
+        <p class="copy-status" id="copy-status" role="status"></p>
+        <div class="countdown" data-countdown="2026-11-30T23:59:59Z">
+          <p class="countdown-caption">Ends November 30, 2026</p>
+          <div class="countdown-grid" data-countdown-grid hidden>
+            <p data-unit="Days" aria-label="Days">
+              <span class="count-chip" data-days>00</span>
+              <span class="count-unit" aria-hidden="true">Day</span>
+            </p>
+            <span class="count-sep" aria-hidden="true">:</span>
+            <p data-unit="Hours" aria-label="Hours">
+              <span class="count-chip" data-hours>00</span>
+              <span class="count-unit" aria-hidden="true">Hr</span>
+            </p>
+            <span class="count-sep" aria-hidden="true">:</span>
+            <p data-unit="Minutes" aria-label="Minutes">
+              <span class="count-chip" data-minutes>00</span>
+              <span class="count-unit" aria-hidden="true">Min</span>
+            </p>
+            <span class="count-sep" aria-hidden="true">:</span>
+            <p data-unit="Seconds" aria-label="Seconds">
+              <span class="count-chip" data-seconds>00</span>
+              <span class="count-unit" aria-hidden="true">Sec</span>
+            </p>
+          </div>
+        </div>
+        <div class="cta-row cta-center">
+          <a class="btn btn-on-dark" href="#plans">See the limited-time plans</a>
+          <a class="btn btn-on-dark-ghost" href="https://apps.shopify.com/17track" target="_blank" rel="noopener noreferrer">Install on Shopify</a>
+        </div>
+        <p class="close-note">After the campaign, prices go back. Miss it and the next window is a year away.</p>
+      </div>
+    </section>
+  </main>
 
-    bindTabs(tabs, (tab) => apply(tab.dataset.lang));
-    bindTabs(adaptTabs, (tab) => applyAdapt(tab.dataset.adapt));
+  <footer class="site-footer">
+    <div class="canvas footer-inner">
+      <a class="footer-logo" href="https://www.17track.com/en" target="_blank" rel="noopener">
+        <img src="assets/logo.svg" alt="17TRACK logo" width="120" height="20">
+      </a>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <p class="footer-kicker">WHO WE ARE</p>
+          <p class="footer-intro">17TRACK has been helping cross-border merchants track orders, provide real-time updates, and boost repeat sales since 2010.</p>
+          <div class="store-badges">
+            <a href="https://apps.apple.com/cn/app/id1004956012?utm_source=com&amp;utm_medium=referer&amp;utm_campaign=20250402-com-home" target="_blank" rel="noopener">
+              <img src="assets/app-store.webp" alt="apple app store" width="154" height="44">
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=yqtrack.app&amp;utm_source=com&amp;utm_medium=referer&amp;utm_campaign=20250402-com-home" target="_blank" rel="noopener">
+              <img src="assets/google-play.webp" alt="google play" width="154" height="44">
+            </a>
+          </div>
+          <ul class="social">
+            <li><a href="https://www.facebook.com/17track" target="_blank" rel="noopener"><img src="assets/facebook.svg" alt="Facebook logo" title="Facebook" width="24" height="24"></a></li>
+            <li><a href="https://twitter.com/17track" target="_blank" rel="noopener"><img src="assets/twitter.svg" alt="Twitter logo" title="Twitter" width="24" height="24"></a></li>
+            <li><a href="https://www.instagram.com/17trackofficial" target="_blank" rel="noopener"><img src="assets/instagram.svg" alt="Instagram logo" title="Instagram" width="24" height="24"></a></li>
+            <li><a href="https://www.youtube.com/@17TRACKOFFICIAL" target="_blank" rel="noopener"><img src="assets/youtube.svg" alt="Youtube logo" title="Youtube" width="24" height="24"></a></li>
+          </ul>
+        </div>
+        <div class="footer-cols">
+          <div>
+            <h2>Products</h2>
+            <ul>
+              <li><a href="https://www.17track.com/en/products/tracking" target="_blank" rel="noopener">Tracking</a></li>
+              <li><a href="https://www.17track.com/en/products/notifications" target="_blank" rel="noopener">Notifications</a></li>
+              <li><a href="https://www.17track.com/en/products/returns" target="_blank" rel="noopener">Returns</a></li>
+              <li><a href="https://www.17track.net/en/api?utm_source=www.17track.com&amp;utm_medium=menus&amp;utm_campaign=footer" target="_blank" rel="noopener">Developer</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Company</h2>
+            <ul>
+              <li><a href="https://www.17track.com/en/about-us" target="_blank" rel="noopener">About Us</a></li>
+              <li><a href="https://www.17track.net/en/about/licensing" target="_blank" rel="noopener">Terms</a></li>
+              <li><a href="https://www.17track.net/en/about/privacy" target="_blank" rel="noopener">Privacy</a></li>
+              <li><a href="https://www.17track.com/en/user-case" target="_blank" rel="noopener">User Cases</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Partners</h2>
+            <ul>
+              <li><button class="footer-textbtn" type="button" data-join>Join with Us</button></li>
+              <li><a href="https://www.17track.com/en/integration" target="_blank" rel="noopener">Partnership &amp; Integration</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Support</h2>
+            <ul>
+              <li><a href="https://www.17track.com/en/contact-us" target="_blank" rel="noopener">7×24 Support</a></li>
+              <li><a href="https://www.17track.com/en/contact-us" target="_blank" rel="noopener">Contact Us</a></li>
+              <li><a href="https://www.17track.com/en/pricing" target="_blank" rel="noopener">Pricing</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-base">
+        <div class="footer-meta">
+          <div class="lang" data-lang>
+            <button class="lang-button" type="button" aria-expanded="false" aria-controls="lang-menu" aria-label="language select" data-lang-button>
+              English
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul id="lang-menu" class="lang-menu" hidden>
+              <li><a href="https://www.17track.com/en" target="_blank" rel="noopener" aria-current="true">English</a></li>
+              <li><a href="https://www.17track.com/zh-cn" target="_blank" rel="noopener">简体中文</a></li>
+              <li><a href="https://www.17track.com/zh-hk" target="_blank" rel="noopener">繁體中文</a></li>
+              <li><a href="https://www.17track.com/ja" target="_blank" rel="noopener">日本語</a></li>
+              <li><a href="https://www.17track.com/fi" target="_blank" rel="noopener">Suomi</a></li>
+              <li><a href="https://www.17track.com/pl" target="_blank" rel="noopener">Polski</a></li>
+              <li><a href="https://www.17track.com/tr" target="_blank" rel="noopener">Türkçe</a></li>
+              <li><a href="https://www.17track.com/cs" target="_blank" rel="noopener">Čeština</a></li>
+              <li><a href="https://www.17track.com/it" target="_blank" rel="noopener">Italiano</a></li>
+              <li><a href="https://www.17track.com/de" target="_blank" rel="noopener">Deutsch</a></li>
+              <li><a href="https://www.17track.com/es" target="_blank" rel="noopener">Español</a></li>
+              <li><a href="https://www.17track.com/fr" target="_blank" rel="noopener">Français</a></li>
+              <li><a href="https://www.17track.com/pt" target="_blank" rel="noopener">Português</a></li>
+              <li><a href="https://www.17track.com/nl" target="_blank" rel="noopener">Nederlands</a></li>
+              <li><a href="https://www.17track.com/sv" target="_blank" rel="noopener">Svenska</a></li>
+              <li><a href="https://www.17track.com/th" target="_blank" rel="noopener">ภาษาไทย</a></li>
+              <li><a href="https://www.17track.com/no" target="_blank" rel="noopener">Norsk</a></li>
+              <li><a href="https://www.17track.com/da" target="_blank" rel="noopener">Dansk</a></li>
+            </ul>
+          </div>
+          <nav class="legal-links" aria-label="Legal">
+            <a href="https://www.17track.net/en/about/licensing" target="_blank" rel="noreferrer noopener">Terms</a>
+            <a href="https://www.17track.net/en/about/privacy" target="_blank" rel="noreferrer noopener">Privacy</a>
+            <a href="https://www.17track.net/en/about/copyright" target="_blank" rel="noreferrer noopener">Copyright</a>
+          </nav>
+        </div>
+        <p class="copyright">© Copyright 2011-2026 17TRACK All Rights Reserved.17TRACK.COM is a subsidiary of <a href="https://17track.net/en" target="_blank" rel="nofollow noreferrer noopener">17TRACK.NET</a>. <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow noreferrer noopener">粤ICP备11015089号</a></p>
+      </div>
+    </div>
+  </footer>
 
-    let initial = "zh";
-    let initialAdapt = "desktop";
-    try {
-      const stored = localStorage.getItem("bfcm-lang");
-      if (stored && copy[stored]) initial = stored;
-      const storedAdapt = localStorage.getItem("bfcm-adapt");
-      if (storedAdapt && ["desktop", "tablet", "mobile"].includes(storedAdapt)) initialAdapt = storedAdapt;
-    } catch (err) {}
+  <dialog class="join-dialog" id="join-dialog" aria-labelledby="join-title">
+    <h2 id="join-title">Join with us form for business cooperation</h2>
+    <p>The partnership application lives on 17TRACK.</p>
+    <p><a href="https://www.17track.com/en" target="_blank" rel="noopener">Open 17TRACK</a></p>
+    <button class="btn btn-primary" type="button" data-join-close>Close</button>
+  </dialog>
 
-    apply(initial);
-    applyAdapt(initialAdapt);
-    tick();
-    setInterval(tick, 1000);
-
-    const modal = document.getElementById("plan-modal");
-    const panel = modal.querySelector(".modal-panel");
-    let opener = null;
-
-    function focusableInModal() {
-      return [...panel.querySelectorAll("button")].filter((el) => el.getClientRects().length > 0);
-    }
-
-    function openModal(variant, button) {
-      opener = button;
-      panel.dataset.variant = variant;
-      panel.setAttribute("aria-labelledby", variant === "ending" ? "modal-title-ending" : "modal-title-live");
-      modal.hidden = false;
-      document.body.classList.add("modal-open");
-      panel.focus({ preventScroll: true });
-    }
-
-    function closeModal() {
-      if (modal.hidden) return;
-      modal.hidden = true;
-      document.body.classList.remove("modal-open");
-      if (opener && opener.isConnected) opener.focus();
-      opener = null;
-    }
-
-    document.querySelectorAll("[data-modal]").forEach((button) => {
-      button.addEventListener("click", () => openModal(button.dataset.modal, button));
-    });
-
-    modal.addEventListener("click", (event) => {
-      if (event.target.closest("[data-close]")) closeModal();
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (modal.hidden) return;
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closeModal();
-        return;
-      }
-      if (event.key !== "Tab") return;
-      const items = focusableInModal();
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    });
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
