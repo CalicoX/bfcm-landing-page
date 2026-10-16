@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BFCM 2026</title>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <style>
+    :root {
+      --page: #f1f1f1;
+      --ink: #1c1c1c;
+      --ink-2: #333333;
+      --text: #303030;
+      --muted: #b5b5b5;
+      --sub-cool: #cbd5e1;
+      --colon: #e3e3e3;
+      --gold: #ffb657;
+      --gold-mid: #ffe99d;
+      --gold-deep: #db9350;
+      --font: Inter, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .chrome,
+    .page {
+      width: min(950px, calc(100% - 32px));
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .chrome { margin-top: 40px; }
+
+    .page {
+      margin-top: 20px;
+      padding-bottom: 72px;
+    }
+
+    .page[data-adapt="tablet"] { width: min(768px, calc(100% - 32px)); }
+    .page[data-adapt="mobile"] { width: min(390px, calc(100% - 32px)); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 16px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      width: max-content;
+      max-width: 100%;
+      margin: 0;
+      padding: 4px;
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tabs button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #616161;
+      font-family: inherit;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+      flex: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tabs button:hover:not([aria-selected="true"]) {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text);
+    }
+
+    .tabs button[aria-selected="true"] {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .adapt-size {
+      margin-left: 6px;
+      font-weight: 450;
+      font-size: 12px;
+      letter-spacing: 0;
+      opacity: 0.55;
+    }
+
+    .tabs button[aria-selected="true"] .adapt-size { opacity: 0.78; }
+
+    .tabs button:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .banner {
+      container-type: inline-size;
+      container-name: banner;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid #fff0bf;
+      background: linear-gradient(90deg, #1c1c1c 0%, #333333 100%);
+    }
+
+    .glow {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-left {
+      width: 780px;
+      height: 780px;
+      left: -340px;
+      top: -300px;
+    }
+
+    .glow-center {
+      width: 240px;
+      height: 240px;
+      left: 42%;
+      top: -30px;
+    }
+
+    .watermark {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: -4.1cqw;
+      transform: translateX(-50%);
+      margin: 0;
+      font-family: Kameron, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: 19.035cqw;
+      line-height: 1.2;
+      letter-spacing: -0.037em;
+      white-space: nowrap;
+      color: transparent;
+      -webkit-text-stroke: 0.22cqw #ffffa2;
+      opacity: 0.06;
+      pointer-events: none;
+      user-select: none;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
+    }
+
+    .banner-b .watermark { top: -2cqw; }
+
+    .banner-body {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .copy {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .art {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 140px;
+      pointer-events: none;
+    }
+
+    .title-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .title {
+      margin: 0;
+      min-width: 0;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      background: linear-gradient(90deg, #ffffff 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .banner-b .title {
+      font-weight: 650;
+      font-size: 20px;
+      line-height: 24px;
+      white-space: pre-line;
+    }
+
+    .sparkle {
+      display: block;
+      width: 29px;
+      height: 29px;
+      flex: none;
+    }
+
+    .offer-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .banner-b .offer-row { margin-top: 3px; }
+
+    .sub {
+      margin: 0;
+      display: block;
+      flex: 0 1 auto;
+      width: auto;
+      max-width: 100%;
+      min-width: 0;
+      color: #cbd5e1;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .sub-line {
+      display: block;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    @container banner (min-width: 700px) {
+      .offer-row { flex-wrap: nowrap; }
+    }
+
+    .offer {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      gap: 6.316px;
+      padding: 1.263px 5.053px;
+      border-radius: 18.316px;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 50%, var(--gold-deep) 100%);
+      color: #000;
+      font-family: "Libre Baskerville", "Songti SC", "Noto Serif SC", serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 12.632px;
+      line-height: 28.421px;
+      white-space: nowrap;
+    }
+
+    .offer span:empty { display: none; }
+
+    .offer-num {
+      font-size: 20.211px;
+      line-height: 28.421px;
+    }
+
+    .gift,
+    .piece {
+      position: absolute;
+      display: block;
+      object-fit: contain;
+    }
+
+    .gift {
+      left: 50%;
+      top: 50%;
+      width: 120px;
+      height: 120px;
+      transform: translate(-50%, -50%);
+    }
+
+    .banner-b .gift {
+      width: 128px;
+      height: 128px;
+      transform: translate(-50%, -50%) rotate(15deg);
+    }
+
+    .piece-a {
+      left: calc(50% - 74px);
+      top: 22px;
+      width: 42px;
+      height: 40px;
+    }
+
+    .piece-b {
+      left: calc(50% + 28px);
+      top: 16px;
+      width: 36.12px;
+      height: 33.98px;
+      transform: rotate(75deg);
+    }
+
+    .banner-b .piece-b {
+      width: 43.46px;
+      height: 40.88px;
+    }
+
+    .timer {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .timer-label {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      color: #fff;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .timer-label img {
+      width: 20px;
+      height: 20px;
+      flex: none;
+    }
+
+    .clock {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ticks,
+    .units {
+      display: grid;
+      grid-template-columns: 40px 30px 40px 30px 40px 30px 40px;
+      align-items: center;
+    }
+
+    .tick {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font-weight: 650;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .colon {
+      text-align: center;
+      color: var(--colon);
+      font-weight: 650;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .units span {
+      text-align: center;
+      color: var(--muted);
+      font-weight: 450;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    @container banner (max-width: 699px) {
+      .ticks,
+      .units {
+        grid-template-columns: 34px 16px 34px 16px 34px 16px 34px;
+      }
+
+      .tick {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+        border-radius: 7px;
+      }
+
+      .colon { font-size: 16px; }
+
+      .art {
+        position: absolute;
+        top: auto;
+        left: auto;
+        right: 0;
+        bottom: 0;
+        width: 180px;
+        height: 140px;
+      }
+
+      .banner-b .art { right: 8px; bottom: 18px; }
+    }
+
+    @container banner (min-width: 700px) and (max-width: 919px) {
+      .banner-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 108px 250px;
+        grid-template-areas: "copy art timer";
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 0;
+        padding: 18px 16px 18px 20px;
+      }
+
+      .copy { grid-area: copy; width: auto; }
+      .banner-b .copy { padding-right: 8px; }
+      .art {
+        grid-area: art;
+        width: 108px;
+        height: 120px;
+        justify-self: center;
+      }
+      .timer { grid-area: timer; justify-self: end; }
+
+      .gift { width: 100px; height: 100px; }
+      .banner-b .gift { width: 108px; height: 108px; }
+
+      .piece-a {
+        left: -4px;
+        top: 22px;
+        width: 32px;
+        height: 30px;
+      }
+
+      .piece-b {
+        left: auto;
+        right: -6px;
+        top: 10px;
+        width: 30px;
+        height: 28px;
+      }
+
+      .banner-b .piece-b { width: 34px; height: 32px; }
+    }
+
+    @container banner (min-width: 920px) {
+      .banner-body {
+        display: block;
+        min-height: 124px;
+        padding: 26px 24px 16px;
+      }
+
+      .banner-b .banner-body { min-height: 163px; }
+
+      .banner-a .copy { max-width: 454px; }
+      .banner-b .copy { max-width: 428px; }
+      .banner-a .title { white-space: nowrap; }
+
+      .glow-left {
+        width: 982px;
+        height: 982px;
+        left: -467px;
+        top: -434px;
+      }
+
+      .glow-center {
+        width: 288px;
+        height: 288px;
+        left: 419px;
+        top: -48px;
+      }
+
+      .art {
+        position: absolute;
+        inset: 0;
+        width: auto;
+        height: auto;
+      }
+
+      .timer {
+        position: absolute;
+        top: 15px;
+        right: 34px;
+        width: 250px;
+      }
+
+      .banner-b .timer { top: 36px; }
+
+      .banner-a .gift {
+        left: 506px;
+        top: 3px;
+        width: 128px;
+        height: 128px;
+        transform: none;
+      }
+
+      .banner-a .piece-a {
+        left: 492px;
+        top: 18px;
+        width: 42px;
+        height: 40px;
+        transform: none;
+      }
+
+      .banner-a .piece-b {
+        left: 637.42px;
+        top: 21.15px;
+        right: auto;
+        width: 36.12px;
+        height: 33.98px;
+        transform: rotate(75deg);
+      }
+
+      .banner-b .gift {
+        left: 517.44px;
+        top: 30.18px;
+        width: 143.98px;
+        height: 143.98px;
+        transform: rotate(15deg);
+      }
+
+      .banner-b .piece-a {
+        left: 464px;
+        top: 36px;
+        width: 42px;
+        height: 40px;
+        transform: none;
+      }
+
+      .banner-b .piece-b {
+        left: 632.13px;
+        top: 29.84px;
+        right: auto;
+        width: 43.46px;
+        height: 40.88px;
+        transform: rotate(75deg);
+      }
+    }
+
+    .banner-cta {
+      appearance: none;
+      position: relative;
+      z-index: 4;
+      display: inline-block;
+      max-width: 100%;
+      margin-top: 12px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: #eaf4ff;
+      color: #303030;
+      font-family: inherit;
+      font-weight: 550;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      white-space: normal;
+      cursor: pointer;
+    }
+
+    .banner-cta:hover { background: #dcedff; }
+
+    .banner-cta:focus-visible {
+      outline: 2px solid #ffb657;
+      outline-offset: 2px;
+    }
+
+    @container banner (max-width: 420px) {
+      .banner-cta { margin-top: 10px; margin-bottom: 6px; }
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .modal[hidden] { display: none; }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 12, 12, 0.62);
+    }
+
+    .modal-panel {
+      container-type: inline-size;
+      container-name: modal;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: min(620px, 100%);
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      overflow: hidden;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #353535 100%);
+      box-shadow:
+        0 20px 20px -8px rgba(26, 26, 26, 0.28),
+        inset 0 1px 0 rgba(204, 204, 204, 0.5),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.17),
+        inset 1px 0 0 rgba(0, 0, 0, 0.13),
+        inset -1px 0 0 rgba(0, 0, 0, 0.17);
+      color: #fff;
+    }
+
+    body[data-adapt="mobile"] .modal-panel {
+      width: min(358px, 100%);
+    }
+
+    .modal-mark {
+      position: absolute;
+      z-index: 0;
+      left: 50%;
+      top: -55px;
+      transform: translateX(-50%);
+      margin: 0;
+      font-family: Kameron, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: 217.568px;
+      line-height: 261.082px;
+      letter-spacing: -8.05px;
+      white-space: nowrap;
+      color: transparent;
+      -webkit-text-stroke: 2.5px #ffffa2;
+      opacity: 0.1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .modal-glow {
+      position: absolute;
+      z-index: 0;
+      left: 0;
+      top: calc(50% - 303px);
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .modal-glow img {
+      position: absolute;
+      max-width: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .modal-close {
+      position: absolute;
+      z-index: 3;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 4px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .modal-close img { display: block; }
+
+    .modal-close:hover { background: rgba(255, 255, 255, 0.08); }
+
+    .modal-close:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .modal-scroll {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      min-height: 0;
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: 40px 32px;
+    }
+
+    .modal-panel[data-variant="live"] [data-panel="ending"],
+    .modal-panel[data-variant="ending"] [data-panel="live"] {
+      display: none;
+    }
+
+    .modal-live,
+    .modal-ending {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .modal-live { gap: 16px; }
+    .modal-ending { gap: 4px; }
+
+    .modal-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .modal-head-live { gap: 8px; }
+
+    .modal-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+      margin: 0;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 40px;
+      letter-spacing: -0.3px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .modal-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      column-gap: 6px;
+      row-gap: 0;
+      max-width: 100%;
+    }
+
+    .modal-title-row .sparkle { margin-top: 0; }
+
+    .modal-gold {
+      background-image: linear-gradient(90deg, #ffe99d 0%, #db9350 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .modal-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 29px;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 50%, var(--gold-deep) 100%);
+      color: #303030;
+      text-align: center;
+    }
+
+    .modal-pill-live {
+      position: relative;
+      padding: 11.174px 13.968px 6.984px;
+      border-radius: 40.506px;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .modal-pill-end {
+      padding: 4px 10px;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .modal-badge-img { display: block; }
+
+    html[lang="en"] .modal-live-badge-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    html:not([lang="en"]) .modal-badge-img { display: none; }
+
+    html:not([lang="en"]) .modal-pill-live {
+      padding: 9px 16px;
+      border-radius: 40.506px;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .modal-copy {
+      max-width: 556px;
+      margin: 0;
+      color: rgba(203, 213, 225, 0.9);
+      font-weight: 450;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .modal-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      padding: 16px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+    }
+
+    .modal-card-label {
+      margin: 0;
+      color: rgba(203, 213, 225, 0.9);
+      font-weight: 450;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .modal-clock {
+      display: grid;
+      grid-template-columns: 56px 30px 56px 30px 56px 30px 56px;
+      align-items: center;
+      justify-content: center;
+      justify-items: center;
+      row-gap: 6px;
+      max-width: 100%;
+    }
+
+    .modal-tick {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      background: #fff;
+      color: #303030;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 40px;
+      letter-spacing: -0.3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .modal-colon {
+      color: #e3e3e3;
+      font-weight: 650;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .modal-unit {
+      color: #b5b5b5;
+      font-weight: 450;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .modal-later,
+    .modal-go {
+      appearance: none;
+      max-width: 100%;
+      padding: 12px 16px;
+      white-space: normal;
+      border: 0;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 550;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .modal-later {
+      background: transparent;
+      color: #b5b5b5;
+    }
+
+    .modal-later:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+
+    .modal-go {
+      background: #eaf4ff;
+      color: #303030;
+    }
+
+    .modal-go:hover { background: #dcedff; }
+
+    .modal-later:focus-visible,
+    .modal-go:focus-visible {
+      outline: 2px solid #ffb657;
+      outline-offset: 2px;
+    }
+
+    @container modal (max-width: 520px) {
+      .modal-scroll { padding: 36px 16px 20px; }
+      .modal-title {
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.24px;
+      }
+      .modal-clock {
+        grid-template-columns: 46px 14px 46px 14px 46px 14px 46px;
+      }
+      .modal-tick {
+        width: 46px;
+        height: 46px;
+        font-size: 22px;
+        line-height: 28px;
+        border-radius: 7px;
+      }
+      .modal-copy br { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="chrome">
+    <h1 class="sr-only">BFCM 2026</h1>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Language">
+        <button type="button" role="tab" id="tab-zh" data-lang="zh" aria-selected="true" aria-controls="banners">中文</button>
+        <button type="button" role="tab" id="tab-en" data-lang="en" aria-selected="false" aria-controls="banners" tabindex="-1">English</button>
+        <button type="button" role="tab" id="tab-fr" data-lang="fr" aria-selected="false" aria-controls="banners" tabindex="-1">Français</button>
+        <button type="button" role="tab" id="tab-pt" data-lang="pt" aria-selected="false" aria-controls="banners" tabindex="-1">Português</button>
+        <button type="button" role="tab" id="tab-es" data-lang="es" aria-selected="false" aria-controls="banners" tabindex="-1">Español</button>
+      </div>
+      <div class="tabs" role="tablist" aria-label="适配">
+        <button type="button" role="tab" id="adapt-desktop" data-adapt="desktop" aria-selected="true" aria-controls="banners">桌面<span class="adapt-size">950</span></button>
+        <button type="button" role="tab" id="adapt-tablet" data-adapt="tablet" aria-selected="false" aria-controls="banners" tabindex="-1">平板<span class="adapt-size">768</span></button>
+        <button type="button" role="tab" id="adapt-mobile" data-adapt="mobile" aria-selected="false" aria-controls="banners" tabindex="-1">手机<span class="adapt-size">390</span></button>
+      </div>
+    </div>
+  </header>
+  <main class="page" id="banners" data-adapt="desktop">
+    <div class="stack">
+      <article class="banner banner-a">
+        <img class="glow glow-left" src="assets/glow-left.svg" alt="">
+        <img class="glow glow-center" src="assets/glow-center.svg" alt="">
+        <p class="watermark" aria-hidden="true">BFCM2026</p>
+        <div class="banner-body">
+          <div class="copy">
+            <div class="title-line">
+              <h2 class="title" data-t="a.title"></h2>
+              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
+            </div>
+            <div class="offer-row">
+              <p class="sub">
+                <span class="sub-line" data-t="a.sub1"></span>
+                <span class="sub-line" data-t="a.sub2"></span>
+              </p>
+              <span class="offer">
+                <span data-t="offer.pre"></span>
+                <span class="offer-num" data-t="offer.num"></span>
+                <span data-t="offer.post"></span>
+              </span>
+            </div>
+            <button type="button" class="banner-cta" data-modal="live" data-t="modal.cta"></button>
+          </div>
+          <div class="art" aria-hidden="true">
+            <img class="gift" src="assets/gift.png" alt="">
+            <img class="piece piece-a" src="assets/confetti.png" alt="">
+            <img class="piece piece-b" src="assets/confetti.png" alt="">
+          </div>
+          <div class="timer">
+            <div class="timer-label">
+              <img src="assets/clock.svg" alt="">
+              <span data-t="timer"></span>
+            </div>
+            <div class="clock">
+              <div class="ticks">
+                <b class="tick" data-part="d">47</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="h">20</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="m">34</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="s">29</b>
+              </div>
+              <div class="units">
+                <span data-t="units.d"></span>
+                <span></span>
+                <span data-t="units.h"></span>
+                <span></span>
+                <span data-t="units.m"></span>
+                <span></span>
+                <span data-t="units.s"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="banner banner-b">
+        <img class="glow glow-left" src="assets/glow-left.svg" alt="">
+        <img class="glow glow-center" src="assets/glow-center.svg" alt="">
+        <p class="watermark" aria-hidden="true">BFCM2026</p>
+        <div class="banner-body">
+          <div class="copy">
+            <div class="title-line">
+              <h2 class="title" data-t="b.title"></h2>
+              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
+            </div>
+            <div class="offer-row">
+              <p class="sub">
+                <span class="sub-line" data-t="b.sub1"></span>
+                <span class="sub-line" data-t="b.sub2"></span>
+              </p>
+              <span class="offer">
+                <span data-t="offer.pre"></span>
+                <span class="offer-num" data-t="offer.num"></span>
+                <span data-t="offer.post"></span>
+              </span>
+            </div>
+            <button type="button" class="banner-cta" data-modal="ending" data-t="modal.cta"></button>
+          </div>
+          <div class="art" aria-hidden="true">
+            <img class="gift" src="assets/gift.png" alt="">
+            <img class="piece piece-a" src="assets/confetti.png" alt="">
+            <img class="piece piece-b" src="assets/confetti.png" alt="">
+          </div>
+          <div class="timer">
+            <div class="timer-label">
+              <img src="assets/clock.svg" alt="">
+              <span data-t="timer"></span>
+            </div>
+            <div class="clock">
+              <div class="ticks">
+                <b class="tick" data-part="d">47</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="h">20</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="m">34</b>
+                <span class="colon">:</span>
+                <b class="tick" data-part="s">29</b>
+              </div>
+              <div class="units">
+                <span data-t="units.d"></span>
+                <span></span>
+                <span data-t="units.h"></span>
+                <span></span>
+                <span data-t="units.m"></span>
+                <span></span>
+                <span data-t="units.s"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <div class="modal" id="plan-modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title-live" tabindex="-1" data-variant="live">
+      <p class="modal-mark" aria-hidden="true">BFCM</p>
+      <div class="modal-glow" aria-hidden="true">
+        <img src="assets/modal-glow.svg" alt="">
+      </div>
+      <button type="button" class="modal-close" data-close>
+        <img src="assets/modal-close.svg" alt="">
+        <span class="sr-only" data-t="modal.close"></span>
+      </button>
+      <div class="modal-scroll">
+        <div class="modal-live" data-panel="live">
+          <div class="modal-head modal-head-live">
+            <h2 class="modal-title" id="modal-title-live">
+              <span data-t="modal.live.eyebrow"></span>
+              <span class="modal-title-row">
+                <span class="modal-gold" data-t="modal.live.offer"></span>
+                <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
+                <span data-t="modal.live.tail"></span>
+              </span>
+            </h2>
+            <span class="modal-pill modal-pill-live">
+              <img class="modal-badge-img" src="assets/modal-badge.svg" alt="">
+              <span class="modal-live-badge-text" data-t="modal.live.badge"></span>
+            </span>
+          </div>
+          <p class="modal-copy">
+            <span data-t="modal.live.body1"></span><br>
+            <span data-t="modal.live.body2"></span>
+          </p>
+        </div>
+
+        <div class="modal-ending" data-panel="ending">
+          <h2 class="modal-title" id="modal-title-ending">
+            <span class="modal-title-row">
+              <span class="modal-gold" data-t="modal.end.offer"></span>
+              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
+            </span>
+            <span data-t="modal.end.tail"></span>
+          </h2>
+          <span class="modal-pill modal-pill-end" data-t="modal.end.badge"></span>
+          <p class="modal-copy">
+            <span data-t="modal.end.body1"></span><br>
+            <span data-t="modal.end.body2"></span>
+          </p>
+        </div>
+
+        <div class="modal-card" data-panel="ending">
+          <p class="modal-card-label" data-t="timer"></p>
+          <div class="modal-clock">
+            <b class="modal-tick" data-part="d">47</b>
+            <span class="modal-colon">:</span>
+            <b class="modal-tick" data-part="h">20</b>
+            <span class="modal-colon">:</span>
+            <b class="modal-tick" data-part="m">34</b>
+            <span class="modal-colon">:</span>
+            <b class="modal-tick" data-part="s">29</b>
+            <span class="modal-unit" data-t="units.d"></span>
+            <span></span>
+            <span class="modal-unit" data-t="units.h"></span>
+            <span></span>
+            <span class="modal-unit" data-t="units.m"></span>
+            <span></span>
+            <span class="modal-unit" data-t="units.s"></span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-later" data-close data-t="modal.later"></button>
+          <button type="button" class="modal-go" data-t="modal.cta"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const copy = {
+      zh: {
+        offer: { pre: "最高", num: "35%", post: "优惠" },
+        timer: "距离活动结束",
+        units: { d: "天", h: "时", m: "分", s: "秒" },
+        a: {
+          title: "黑色星期五，升级你的业务",
+          sub1: "折扣自动生效",
+          sub2: "年付方案限时优惠"
+        },
+        b: {
+          title: "黑色星期五即将收官，\n立即锁定全年最低价。",
+          sub1: "最后 72 小时倒计时。",
+          sub2: "错过将恢复原价，不再补货"
+        },
+        modal: {
+          cta: "前往方案与账单",
+          later: "稍后再处理",
+          close: "关闭",
+          live: {
+            eyebrow: "你的专属",
+            offer: "黑色星期五优惠",
+            tail: "现已上线",
+            badge: "最高立减 25%",
+            body1: "今年最大的限时优惠现已开放。",
+            body2: "活动结束后价格将恢复原价，今年不会再有更大的折扣。"
+          },
+          end: {
+            offer: "黑色星期五优惠",
+            tail: "即将结束",
+            badge: "最后机会 · BFCM2026",
+            body1: "时间所剩无几，当前黑色星期五专属优惠即将到期。",
+            body2: "活动结束后价格将恢复原价，今年不会再有更大的折扣。"
+          }
+        }
+      },
+      en: {
+        offer: { pre: "UP TO", num: "35%", post: "OFF" },
+        timer: "Time until the event ends",
+        units: { d: "Days", h: "Hrs", m: "Min", s: "SECS" },
+        a: {
+          title: "Black Friday, upgrade your business",
+          sub1: "Discount applied automatically",
+          sub2: "Limited time offer for annual plan"
+        },
+        b: {
+          title: "Black Friday is coming to a close,\nlock in the year's lowest price now.",
+          sub1: "Last 72 hours countdown.",
+          sub2: "Miss it and the price will revert to the original, no restocking"
+        },
+        modal: {
+          cta: "Go to Plan & Billing",
+          later: "Deal it later",
+          close: "Close",
+          live: {
+            eyebrow: "Your exclusive",
+            offer: "Black Friday offer",
+            tail: "is now live",
+            badge: "Up to 25% OFF",
+            body1: "The biggest limited-time offer of the year is now available.",
+            body2: "After the event ends, prices will return to normal, and there won't be a bigger discount this year."
+          },
+          end: {
+            offer: "Black Friday offer",
+            tail: "is ending soon",
+            badge: "LAST CHANCE · BFCM2026",
+            body1: "Time is running out; the current Black Friday exclusive offer will soon expire.",
+            body2: "After the event ends, prices will return to normal, and there won't be any bigger discounts this year."
+          }
+        }
+      },
+      fr: {
+        offer: { pre: "JUSQU'À", num: "−35%", post: "" },
+        timer: "Temps restant avant la fin",
+        units: { d: "Jours", h: "H", m: "Min", s: "Sec" },
+        a: {
+          title: "Black Friday, boostez votre activité",
+          sub1: "Remise appliquée automatiquement",
+          sub2: "Offre limitée au plan annuel"
+        },
+        b: {
+          title: "Le Black Friday touche à sa fin,\nverrouillez le prix le plus bas de l'année.",
+          sub1: "Compte à rebours des 72 dernières heures.",
+          sub2: "Passé ce délai, retour au prix d'origine, sans réassort"
+        },
+        modal: {
+          cta: "Accéder au plan et à la facturation",
+          later: "Décider plus tard",
+          close: "Fermer",
+          live: {
+            eyebrow: "En exclusivité",
+            offer: "Offre Black Friday",
+            tail: "est en ligne",
+            badge: "Jusqu'à −25 %",
+            body1: "La plus grande offre limitée de l'année est disponible.",
+            body2: "Une fois l'événement terminé, les prix reviendront à la normale, et il n'y aura pas de remise plus importante cette année."
+          },
+          end: {
+            offer: "Offre Black Friday",
+            tail: "se termine bientôt",
+            badge: "DERNIÈRE CHANCE · BFCM2026",
+            body1: "Le temps presse : l'offre exclusive Black Friday expire bientôt.",
+            body2: "Une fois l'événement terminé, les prix reviendront à la normale, et il n'y aura pas de remise plus importante cette année."
+          }
+        }
+      },
+      pt: {
+        offer: { pre: "ATÉ", num: "35%", post: "OFF" },
+        timer: "Tempo até ao fim do evento",
+        units: { d: "Dias", h: "H", m: "Min", s: "Seg" },
+        a: {
+          title: "Black Friday, eleve o seu negócio",
+          sub1: "Desconto aplicado automaticamente",
+          sub2: "Oferta limitada no plano anual"
+        },
+        b: {
+          title: "A Black Friday está a terminar,\ngarante já o preço mais baixo do ano.",
+          sub1: "Contagem decrescente das últimas 72 horas.",
+          sub2: "Se perder, o preço volta ao original, sem reposição"
+        },
+        modal: {
+          cta: "Ir para Plano e faturação",
+          later: "Decidir mais tarde",
+          close: "Fechar",
+          live: {
+            eyebrow: "Em exclusivo",
+            offer: "Oferta Black Friday",
+            tail: "já está disponível",
+            badge: "Até 25% de desconto",
+            body1: "A maior oferta por tempo limitado do ano já está disponível.",
+            body2: "Quando o evento terminar, os preços voltam ao normal e não haverá um desconto maior este ano."
+          },
+          end: {
+            offer: "Oferta Black Friday",
+            tail: "está a terminar",
+            badge: "ÚLTIMA CHANCE · BFCM2026",
+            body1: "O tempo está a esgotar-se: a oferta exclusiva de Black Friday expira em breve.",
+            body2: "Quando o evento terminar, os preços voltam ao normal e não haverá um desconto maior este ano."
+          }
+        }
+      },
+      es: {
+        offer: { pre: "HASTA", num: "35%", post: "OFF" },
+        timer: "Tiempo hasta que termine",
+        units: { d: "Días", h: "H", m: "Min", s: "Seg" },
+        a: {
+          title: "Black Friday, haz crecer tu negocio",
+          sub1: "Descuento aplicado automáticamente",
+          sub2: "Oferta limitada en el plan anual"
+        },
+        b: {
+          title: "El Black Friday está por terminar,\nasegura ya el precio más bajo del año.",
+          sub1: "Cuenta atrás de las últimas 72 horas.",
+          sub2: "Si te lo pierdes, el precio vuelve al original y no se repone"
+        },
+        modal: {
+          cta: "Ir a Plan y facturación",
+          later: "Decidir más tarde",
+          close: "Cerrar",
+          live: {
+            eyebrow: "En exclusiva",
+            offer: "Oferta Black Friday",
+            tail: "ya está activa",
+            badge: "Hasta un 25% de descuento",
+            body1: "La mayor oferta por tiempo limitado del año ya está disponible.",
+            body2: "Cuando termine el evento, los precios volverán a la normalidad y no habrá un descuento mayor este año."
+          },
+          end: {
+            offer: "Oferta Black Friday",
+            tail: "está por terminar",
+            badge: "ÚLTIMA OPORTUNIDAD · BFCM2026",
+            body1: "Se acaba el tiempo: la oferta exclusiva de Black Friday caduca pronto.",
+            body2: "Cuando termine el evento, los precios volverán a la normalidad y no habrá un descuento mayor este año."
+          }
+        }
+      }
+    };
+
+    const htmlLang = { zh: "zh-Hans", en: "en", fr: "fr", pt: "pt", es: "es" };
+    const tabs = [...document.querySelectorAll("[data-lang]")];
+    const adaptTabs = [...document.querySelectorAll("[data-adapt]")];
+    const stage = document.querySelector(".page");
+
+    function lookup(obj, path) {
+      return path.split(".").reduce((value, key) => value[key], obj);
+    }
+
+    function apply(lang) {
+      const t = copy[lang];
+      document.documentElement.lang = htmlLang[lang];
+      document.querySelectorAll("[data-t]").forEach((node) => {
+        node.textContent = lookup(t, node.dataset.t);
+      });
+      tabs.forEach((tab) => {
+        const on = tab.dataset.lang === lang;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+      });
+      try { localStorage.setItem("bfcm-lang", lang); } catch (err) {}
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    let deadline;
+    try {
+      const saved = Number(sessionStorage.getItem("bfcm-deadline"));
+      deadline = saved || 0;
+      if (!deadline) {
+        deadline = Date.now() + (((47 * 24 + 20) * 60 + 34) * 60 + 29) * 1000;
+        sessionStorage.setItem("bfcm-deadline", String(deadline));
+      }
+    } catch (err) {
+      deadline = Date.now() + (((47 * 24 + 20) * 60 + 34) * 60 + 29) * 1000;
+    }
+
+    function tick() {
+      const remain = Math.max(0, deadline - Date.now());
+      const total = Math.floor(remain / 1000);
+      const parts = {
+        d: Math.floor(total / 86400),
+        h: Math.floor((total % 86400) / 3600),
+        m: Math.floor((total % 3600) / 60),
+        s: total % 60
+      };
+      document.querySelectorAll("[data-part]").forEach((node) => {
+        node.textContent = pad(parts[node.dataset.part]);
+      });
+    }
+
+    function bindTabs(list, select) {
+      list.forEach((tab) => {
+        tab.addEventListener("click", () => select(tab));
+      });
+      list[0].parentElement.addEventListener("keydown", (event) => {
+        const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+        if (!keys.includes(event.key)) return;
+        event.preventDefault();
+        const current = list.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+        let next = current;
+        if (event.key === "ArrowRight") next = (current + 1) % list.length;
+        if (event.key === "ArrowLeft") next = (current - 1 + list.length) % list.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = list.length - 1;
+        list[next].focus();
+        select(list[next]);
+      });
+    }
+
+    function applyAdapt(adapt) {
+      stage.dataset.adapt = adapt;
+      document.body.dataset.adapt = adapt;
+      adaptTabs.forEach((tab) => {
+        const on = tab.dataset.adapt === adapt;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+      });
+      try { localStorage.setItem("bfcm-adapt", adapt); } catch (err) {}
+    }
+
+    bindTabs(tabs, (tab) => apply(tab.dataset.lang));
+    bindTabs(adaptTabs, (tab) => applyAdapt(tab.dataset.adapt));
+
+    let initial = "zh";
+    let initialAdapt = "desktop";
+    try {
+      const stored = localStorage.getItem("bfcm-lang");
+      if (stored && copy[stored]) initial = stored;
+      const storedAdapt = localStorage.getItem("bfcm-adapt");
+      if (storedAdapt && ["desktop", "tablet", "mobile"].includes(storedAdapt)) initialAdapt = storedAdapt;
+    } catch (err) {}
+
+    apply(initial);
+    applyAdapt(initialAdapt);
+    tick();
+    setInterval(tick, 1000);
+
+    const modal = document.getElementById("plan-modal");
+    const panel = modal.querySelector(".modal-panel");
+    let opener = null;
+
+    function focusableInModal() {
+      return [...panel.querySelectorAll("button")].filter((el) => el.getClientRects().length > 0);
+    }
+
+    function openModal(variant, button) {
+      opener = button;
+      panel.dataset.variant = variant;
+      panel.setAttribute("aria-labelledby", variant === "ending" ? "modal-title-ending" : "modal-title-live");
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+      panel.focus({ preventScroll: true });
+    }
+
+    function closeModal() {
+      if (modal.hidden) return;
+      modal.hidden = true;
+      document.body.classList.remove("modal-open");
+      if (opener && opener.isConnected) opener.focus();
+      opener = null;
+    }
+
+    document.querySelectorAll("[data-modal]").forEach((button) => {
+      button.addEventListener("click", () => openModal(button.dataset.modal, button));
+    });
+
+    modal.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closeModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (modal.hidden) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeModal();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusableInModal();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
