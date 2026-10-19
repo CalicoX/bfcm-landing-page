@@ -583,6 +583,7 @@ h1 {
 
 .section-head { max-width: 40rem; margin-inline: auto; text-align: center; }
 
+#bundle[hidden] { display: none; }
 #bundle .section-head { max-width: none; }
 
 #bundle .section-head .lead {
@@ -1557,15 +1558,204 @@ h2 {
 .close-inner { text-align: left; }
 
 .close-bar {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px 28px;
   min-height: 114px;
   padding: 16px 20px;
-  border: 1px solid #3d7eff;
   border-radius: 12px;
   background: #07143f;
+}
+
+@property --close-beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@property --close-beam-opacity {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+.close-beam {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  --close-beam-spectrum: conic-gradient(
+    from 0deg,
+    rgb(255, 50, 100) 0%,
+    rgb(255, 120, 40) 14%,
+    rgb(240, 50, 180) 28%,
+    rgb(180, 40, 240) 42%,
+    rgb(100, 70, 255) 56%,
+    rgb(40, 140, 255) 70%,
+    rgb(30, 185, 170) 84%,
+    rgb(50, 200, 80) 94%,
+    rgb(255, 50, 100) 100%
+  );
+  animation:
+    close-beam-spin 1.96s linear infinite,
+    close-beam-fade 0.6s ease forwards;
+}
+
+.close-beam::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 11px;
+  padding: 1px;
+  clip-path: inset(0 round 12px);
+  background:
+    conic-gradient(
+      from var(--close-beam-angle),
+      transparent 0%, transparent 54%,
+      rgba(255, 255, 255, 0.1) 57%,
+      rgba(255, 255, 255, 0.3) 60%,
+      rgba(255, 255, 255, 0.6) 63%,
+      rgba(255, 255, 255, 0.75) 66%,
+      rgba(255, 255, 255, 0.6) 69%,
+      rgba(255, 255, 255, 0.3) 72%,
+      rgba(255, 255, 255, 0.1) 75%,
+      transparent 78%, transparent 100%
+    ),
+    var(--close-beam-spectrum);
+  -webkit-mask:
+    conic-gradient(
+      from var(--close-beam-angle),
+      transparent 0%, transparent 30%,
+      rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%,
+      white 52%, white 80%,
+      rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
+      transparent 95%, transparent 100%
+    ),
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: source-in, xor;
+  mask:
+    conic-gradient(
+      from var(--close-beam-angle),
+      transparent 0%, transparent 30%,
+      rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%,
+      white 52%, white 80%,
+      rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
+      transparent 95%, transparent 100%
+    ),
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: intersect, exclude;
+  pointer-events: none;
+  z-index: 2;
+  opacity: calc(var(--close-beam-opacity) * 0.26 * var(--beam-stroke-opacity, 1) * var(--beam-strength, 1));
+  animation: close-beam-hue 12s ease-in-out infinite;
+}
+
+.close-beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--close-beam-spectrum);
+  box-shadow: inset 0 0 9px 1px rgba(255, 255, 255, 0.27);
+  -webkit-mask-image:
+    conic-gradient(
+      from var(--close-beam-angle),
+      transparent 0%, transparent 30%,
+      rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%,
+      white 52%, white 80%,
+      rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
+      transparent 95%, transparent 100%
+    ),
+    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
+    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+  -webkit-mask-composite: source-in, source-over;
+  mask-image:
+    conic-gradient(
+      from var(--close-beam-angle),
+      transparent 0%, transparent 30%,
+      rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%,
+      white 52%, white 80%,
+      rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
+      transparent 95%, transparent 100%
+    ),
+    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
+    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+  mask-composite: intersect, add;
+  pointer-events: none;
+  z-index: 1;
+  opacity: calc(var(--close-beam-opacity) * 0.42 * var(--beam-inner-opacity, 1) * var(--beam-strength, 1));
+  clip-path: inset(0 round 12px);
+  animation: close-beam-hue 12s ease-in-out infinite;
+}
+
+.close-beam-bloom {
+  position: absolute;
+  inset: 0;
+  border-radius: 11px;
+  clip-path: inset(0 round 12px);
+  background: conic-gradient(
+    from var(--close-beam-angle),
+    transparent 0%, transparent 58%,
+    rgba(255, 255, 255, 0.03) 62%,
+    rgba(255, 255, 255, 0.08) 65%,
+    rgba(255, 255, 255, 0.2) 67%,
+    rgba(255, 255, 255, 0.45) 69%,
+    rgba(255, 255, 255, 0.85) 70%,
+    rgba(255, 255, 255, 0.85) 70.5%,
+    rgba(255, 255, 255, 0.45) 71.5%,
+    rgba(255, 255, 255, 0.2) 73%,
+    rgba(255, 255, 255, 0.08) 75%,
+    rgba(255, 255, 255, 0.03) 78%,
+    transparent 82%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1px;
+  filter: blur(8px) brightness(1.3) saturate(1.2);
+  pointer-events: none;
+  z-index: 3;
+  opacity: calc(var(--close-beam-opacity) * 0.24 * var(--beam-bloom-opacity, 1) * var(--beam-strength, 1));
+}
+
+@keyframes close-beam-spin {
+  to { --close-beam-angle: 360deg; }
+}
+
+@keyframes close-beam-fade {
+  to { --close-beam-opacity: 1; }
+}
+
+@keyframes close-beam-hue {
+  0% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) - 30deg)) brightness(1.3) saturate(1.2); }
+  50% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) + 30deg)) brightness(1.3) saturate(1.2); }
+  100% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) - 30deg)) brightness(1.3) saturate(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .close-beam,
+  .close-beam::before,
+  .close-beam::after {
+    animation: none;
+  }
+
+  .close-beam {
+    --close-beam-angle: 200deg;
+    --close-beam-opacity: 1;
+  }
+
+  .close-beam::before,
+  .close-beam::after {
+    filter: brightness(1.3) saturate(1.2);
+  }
 }
 
 .close-copy {
@@ -1637,12 +1827,16 @@ h2 {
   gap: 8px;
   margin: 0;
   padding: 6px 6px 6px 14px;
+  border: 1px dashed rgba(255, 214, 140, 0.7);
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.35);
 }
 
 .code-label {
-  color: #e6b325;
+  background: linear-gradient(100deg, #ffe99d 0%, #ffb657 48%, #db9350 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-size: 13px;
   font-weight: 600;
   line-height: 18px;
