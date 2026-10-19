@@ -140,12 +140,87 @@
     setMenuOpen(false);
   });
 
-  document.querySelectorAll(".faq button").forEach(function (button) {
+  var faqButtons = document.querySelectorAll(".faq button");
+
+  function faqReduce() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function faqPanel(button) {
+    var id = button.getAttribute("aria-controls");
+    return id ? document.getElementById(id) : null;
+  }
+
+  function faqClear(panel) {
+    if (!panel) return;
+    if (panel._faqTimer) window.clearTimeout(panel._faqTimer);
+    panel._faqTimer = 0;
+    if (panel._faqOnEnd) panel.removeEventListener("transitionend", panel._faqOnEnd);
+    panel._faqOnEnd = null;
+  }
+
+  function faqSettle(panel, open) {
+    faqClear(panel);
+    if (open) {
+      if (panel.classList.contains("is-open")) panel.classList.add("is-settled");
+      return;
+    }
+    if (!panel.classList.contains("is-open")) panel.hidden = true;
+  }
+
+  function faqWatch(panel, open) {
+    faqClear(panel);
+    panel._faqOnEnd = function (event) {
+      if (event.target !== panel || event.propertyName !== "grid-template-rows") return;
+      faqSettle(panel, open);
+    };
+    panel.addEventListener("transitionend", panel._faqOnEnd);
+    panel._faqTimer = window.setTimeout(function () {
+      faqSettle(panel, open);
+    }, 500);
+  }
+
+  function faqClose(button) {
+    var panel = faqPanel(button);
+    if (!panel || button.getAttribute("aria-expanded") !== "true") return;
+    faqClear(panel);
+    button.setAttribute("aria-expanded", "false");
+    panel.setAttribute("aria-hidden", "true");
+    panel.classList.remove("is-settled");
+    panel.classList.remove("is-open");
+    if (faqReduce()) {
+      panel.hidden = true;
+      return;
+    }
+    faqWatch(panel, false);
+  }
+
+  function faqOpen(button) {
+    var panel = faqPanel(button);
+    if (!panel || button.getAttribute("aria-expanded") === "true") return;
+    faqButtons.forEach(function (other) {
+      if (other !== button) faqClose(other);
+    });
+    faqClear(panel);
+    panel.hidden = false;
+    panel.removeAttribute("aria-hidden");
+    if (faqReduce()) {
+      button.setAttribute("aria-expanded", "true");
+      panel.classList.add("is-open");
+      panel.classList.add("is-settled");
+      return;
+    }
+    panel.classList.remove("is-settled");
+    void panel.offsetHeight;
+    button.setAttribute("aria-expanded", "true");
+    panel.classList.add("is-open");
+    faqWatch(panel, true);
+  }
+
+  faqButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      var panel = document.getElementById(button.getAttribute("aria-controls"));
-      var open = button.getAttribute("aria-expanded") === "true";
-      button.setAttribute("aria-expanded", open ? "false" : "true");
-      if (panel) panel.hidden = open;
+      if (button.getAttribute("aria-expanded") === "true") faqClose(button);
+      else faqOpen(button);
     });
   });
 

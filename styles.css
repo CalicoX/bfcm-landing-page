@@ -543,10 +543,16 @@ h1 {
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 64px;
-  height: 64px;
-  margin-left: -10px;
-  padding: 11px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  max-width: 30px;
+  max-height: 30px;
+  flex: 0 0 30px;
+  margin-left: -8px;
+  padding: 3px;
+  overflow: hidden;
   border: 2px solid var(--page);
   border-radius: 50%;
   background: #fff;
@@ -566,23 +572,10 @@ h1 {
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   object-fit: contain;
   filter: brightness(0);
-}
-
-.merchant-proof p {
-  flex: 1 1 14rem;
-  margin: 0;
-  color: var(--text);
-  font-size: var(--fs-small);
-  font-weight: 500;
-  line-height: 20px;
-  text-align: left;
-}
-
-.merchant-proof strong {
-  color: var(--ink);
-  font-weight: 600;
 }
 
 .section { padding: var(--sec) 0; }
@@ -682,18 +675,31 @@ h2 {
 .note:focus { outline: none; }
 
 #bundle .note {
-  max-width: 68ch;
+  max-width: none;
   margin-inline: auto;
   text-align: center;
+  text-wrap: wrap;
 }
 
-#bundle .copy-status { text-align: center; }
+#bundle .copy-status {
+  position: static;
+  left: auto;
+  top: auto;
+  margin: 8px 0 0;
+  text-align: center;
+  white-space: normal;
+}
 
-.code-copy {
+#bundle .note .code-copy {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
   gap: 6px;
-  margin: 0 0.15em;
+  width: auto;
+  height: auto;
+  min-width: max-content;
+  margin: 0 0 0 6px;
   padding: 1px 8px;
   border: 1px dashed currentColor;
   border-radius: 4px;
@@ -702,16 +708,32 @@ h2 {
   font: inherit;
   font-weight: 700;
   letter-spacing: 0.04em;
-  line-height: 1.4;
-  vertical-align: baseline;
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
   cursor: pointer;
 }
 
-.code-copy svg {
+#bundle .note .code-copy-value {
+  white-space: nowrap;
+}
+
+#bundle .note .code-copy svg {
   display: block;
   width: 14px;
   height: 14px;
   flex: none;
+}
+
+#bundle .note .code-copy:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+@media (min-width: 900px) {
+  #bundle .note {
+    white-space: nowrap;
+  }
 }
 
 .checks {
@@ -1457,6 +1479,8 @@ h2 {
 
 .faq { margin-top: 32px; border-top: 1px solid var(--line); }
 
+.faq-item { border-bottom: 1px solid var(--line); }
+
 .faq h3 { margin: 0; font-size: inherit; font-weight: inherit; }
 
 .faq button {
@@ -1468,7 +1492,6 @@ h2 {
   min-height: 64px;
   padding: 16px 0;
   border: 0;
-  border-bottom: 1px solid var(--line);
   background: transparent;
   color: var(--ink);
   font-family: inherit;
@@ -1486,22 +1509,44 @@ h2 {
   height: 10px;
   border-right: 1.5px solid var(--ink);
   border-bottom: 1.5px solid var(--ink);
-  transform: rotate(45deg) translateY(-2px);
+  transform: translateY(-2px) rotate(45deg);
 }
 
 .faq button[aria-expanded="true"]::after {
-  transform: rotate(225deg) translateY(-2px);
+  transform: translateY(-2px) rotate(225deg);
 }
 
-.faq [role="region"] {
-  padding: 0 0 20px;
-  border-bottom: 1px solid var(--line);
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.faq-panel.is-open { grid-template-rows: 1fr; }
+
+.faq-panel[hidden] { display: none; }
+
+.faq-panel-inner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
   color: var(--text);
   font-size: var(--fs-body);
   line-height: 22px;
 }
 
-.faq button[aria-expanded="true"] { border-bottom: 0; }
+.faq-panel.is-open .faq-panel-inner { opacity: 1; }
+
+.faq-panel.is-open.is-settled .faq-panel-inner { overflow: visible; }
+
+.faq-panel-inner p { padding: 0 0 20px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .faq button::after { transition: transform 320ms var(--ease); }
+
+  .faq-panel { transition: grid-template-rows 320ms var(--ease); }
+
+  .faq-panel-inner { transition: opacity 180ms ease; }
+}
 
 .close {
   background: transparent;
@@ -1619,14 +1664,29 @@ h2 {
 .code-copy {
   display: grid;
   place-items: center;
+  align-items: center;
+  gap: 6px;
   width: 28px;
   height: 28px;
+  margin: 0 0.15em;
   padding: 0;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  vertical-align: baseline;
   cursor: pointer;
+}
+
+.code-copy svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: none;
 }
 
 .code-copy:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
