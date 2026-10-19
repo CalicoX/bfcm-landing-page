@@ -462,9 +462,9 @@ a { color: inherit; }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   align-items: center;
-  gap: 56px;
+  gap: 36px;
 }
 
 .hero-grid > * { min-width: 0; }
@@ -483,8 +483,8 @@ a { color: inherit; }
 .hero-visual img {
   display: block;
   width: 100%;
+  max-width: none;
   height: auto;
-  object-fit: contain;
 }
 
 h1 {
@@ -1853,6 +1853,10 @@ h2 {
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+#bfcm-code {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
 }
 
 .code-copy {
