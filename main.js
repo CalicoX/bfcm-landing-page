@@ -254,29 +254,11 @@
   document.querySelectorAll("[data-copy]").forEach(function (button) {
     var label = button.textContent;
     var inline = button.hasAttribute("data-copy-inline");
-    var codeLine = button.closest(".code-line");
-    var codeEl = codeLine ? codeLine.querySelector(".code") : null;
-    var restoreTimer = 0;
     button.addEventListener("click", function () {
       var code = button.getAttribute("data-copy-code") || "BFCM2026";
-      var status = document.getElementById(button.getAttribute("data-copy-status") || "copy-status");
-      if (codeEl) {
-        codeEl.textContent = "Copied";
-        if (status) status.textContent = "";
-        window.clearTimeout(restoreTimer);
-        restoreTimer = window.setTimeout(function () {
-          codeEl.textContent = code;
-        }, 2000);
-      }
+      var statusId = button.getAttribute("data-copy-status");
+      var status = statusId ? document.getElementById(statusId) : null;
       copyText(code, function (ok) {
-        if (codeEl) {
-          if (!ok) {
-            window.clearTimeout(restoreTimer);
-            codeEl.textContent = code;
-            if (status) status.textContent = "Select BFCM2026 and copy it manually.";
-          }
-          return;
-        }
         var message = ok ? "Copied" : "Select BFCM2026 and copy it manually.";
         if (status) status.textContent = inline ? message : (ok ? "Code copied." : message);
         if (!inline) button.textContent = ok ? "Copied" : label;
@@ -746,7 +728,7 @@
         tab.textContent = item[1];
         if (item[0] === "year") {
           var mark = el("span", "bill-bf");
-          mark.textContent = "Black Friday";
+          mark.textContent = "Best value";
           tab.appendChild(mark);
         }
         tabs.appendChild(tab);

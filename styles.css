@@ -466,6 +466,13 @@ a { color: inherit; }
   flex: none;
 }
 
+#prepare .cta-row .btn-primary .file-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
 .btn-ghost {
   background: #fff;
   border: 1.5px solid rgba(0, 58, 155, 0.22);
@@ -507,13 +514,31 @@ a { color: inherit; }
   margin: 0;
   width: 100%;
   align-self: end;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .hero-visual img {
   display: block;
-  width: 100%;
+  width: 85%;
   height: auto;
   max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+@media (min-width: 901px) {
+  .hero-visual img {
+    width: 85%;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    object-position: center bottom;
+    flex: none;
+  }
 }
 
 h1 {
@@ -527,6 +552,21 @@ h1 {
   font-weight: 700;
   line-height: 1.1;
   color: #0a0a0a;
+}
+
+.hero-bf {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.hero-sparkle {
+  display: block;
+  width: 0.95em;
+  height: 0.95em;
+  margin-left: 0.1em;
+  margin-right: 0.02em;
+  flex: none;
 }
 
 .lead {
@@ -644,6 +684,20 @@ h2 {
   font-size: clamp(24px, calc(18.24px + 1.6vw), 40px);
   font-weight: 700;
   line-height: 1.15;
+}
+
+.report-bf {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.report-sparkle {
+  display: block;
+  width: 0.78em;
+  height: 0.78em;
+  margin-left: 0.1em;
+  flex: none;
 }
 
 .section-head .lead { margin-top: var(--sec-title-desc); }
@@ -945,6 +999,48 @@ h2 {
 }
 
 #plans-stage { margin-top: var(--sec-head-gap); }
+
+#plans .plans-title-row {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+#plans .plans-title-row h2 {
+  position: relative;
+  z-index: 1;
+}
+
+#plans .plans-confetti {
+  position: absolute;
+  top: 50%;
+  z-index: 0;
+  display: block;
+  width: 136px;
+  height: 76px;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-62%);
+}
+
+#plans .plans-confetti--left { right: calc(100% + 16px); }
+#plans .plans-confetti--right { left: calc(100% + 16px); }
+
+@media (max-width: 980px) {
+  #plans .plans-confetti {
+    width: 92px;
+    height: 52px;
+  }
+
+  #plans .plans-confetti--left { right: calc(100% + 8px); }
+  #plans .plans-confetti--right { left: calc(100% + 8px); }
+}
+
+@media (max-width: 720px) {
+  #plans .plans-confetti { display: none; }
+}
 
 .price-cards {
   display: grid;
@@ -1588,7 +1684,7 @@ h2 {
 .close {
   background: transparent;
   color: var(--text-primary);
-  padding: 0 0 28px;
+  padding: 0 0 56px;
 }
 
 .close-inner { text-align: left; }
@@ -1702,26 +1798,28 @@ h2 {
 }
 
 .close-chip {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-  padding: 3px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  color: #dbeafe;
-  font-size: 11px;
+  align-self: stretch;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 15px;
   font-weight: 450;
-  line-height: 16.5px;
+  line-height: 22px;
   letter-spacing: 0;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .close-title-line {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px 12px;
   min-width: 0;
@@ -1730,19 +1828,15 @@ h2 {
 
 .close-display {
   margin: 0;
-  flex: none;
-  width: max-content;
-  max-width: 100%;
+  flex: 0 1 auto;
+  width: auto;
+  max-width: calc(100% - 41px);
   min-width: 0;
   font-weight: 700;
   font-size: 24px;
   line-height: 32px;
   letter-spacing: -0.2px;
-  background: linear-gradient(90deg, #ffffff 0%, #ffb657 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #ffffff;
 }
 
 .close-sparkle {
@@ -1751,50 +1845,6 @@ h2 {
   height: 29px;
   flex: none;
 }
-
-.close-code {
-  position: relative;
-  z-index: 4;
-  flex: none;
-  margin-top: 0;
-}
-
-.code-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 100%;
-  margin: 0;
-  padding: 10px 16px;
-  border: 0;
-  border-radius: 999px;
-  background: #eaf4ff;
-  color: #303030;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  white-space: nowrap;
-}
-
-.code-line:hover { background: #dcedff; }
-
-.code-label,
-.code {
-  padding: 0;
-  background: none;
-  color: #303030;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0;
-  white-space: nowrap;
-  -webkit-text-fill-color: currentColor;
-}
-
-.code { font-weight: 700; }
-
-#bfcm-code { font-family: inherit; }
 
 .code-copy {
   display: grid;
@@ -1818,8 +1868,6 @@ h2 {
   height: 16px;
   flex: none;
 }
-
-.close-bar .code-copy:hover { background: transparent; color: #111; }
 
 .copy-status {
   margin: 4px 0 0;
@@ -2269,6 +2317,54 @@ h2 {
     --sec-cta-gap: 20px;
     --page-pad-x: 16px;
   }
+
+  .countdown {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .countdown-grid {
+    width: 100%;
+  }
+
+  .countdown-grid > p {
+    flex: 1 1 0;
+  }
+
+  .close-copy,
+  .close-pills,
+  .close-title-line {
+    justify-self: stretch;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .close-title-line { flex-wrap: nowrap; }
+
+  .close-chip {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .close-display {
+    flex: 0 1 auto;
+    width: auto;
+    max-width: calc(100% - 41px);
+    min-width: 0;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .close-sparkle {
+    flex: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2331,7 +2427,11 @@ h2 {
   .figures,
   .stats { grid-template-columns: 1fr; }
   .close .cta-row { justify-content: flex-start; }
-  .close-chip { white-space: normal; }
+  .close-chip {
+    white-space: normal;
+    overflow-wrap: break-word;
+    width: 100%;
+  }
   .close-body { padding: 16px; }
   .countdown { padding: 8px 6px 6px; }
   .countdown-grid { gap: 3px; }
