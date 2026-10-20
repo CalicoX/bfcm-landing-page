@@ -36,34 +36,6 @@
     });
   }
 
-  var promo = document.querySelector("[data-promo]");
-  var promoItems = promo ? promo.querySelectorAll("[data-promo-item]") : [];
-  var promoIndex = 0;
-  var promoTimer = 0;
-
-  function showPromo(index) {
-    promoItems.forEach(function (item, itemIndex) {
-      item.hidden = itemIndex !== index;
-    });
-  }
-
-  if (promoItems.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    promoTimer = window.setInterval(function () {
-      promoIndex = (promoIndex + 1) % promoItems.length;
-      showPromo(promoIndex);
-    }, 5000);
-  }
-
-  var promoClose = document.querySelector("[data-promo-close]");
-  if (promo && promoClose) {
-    promoClose.addEventListener("click", function () {
-      promo.hidden = true;
-      document.documentElement.style.setProperty("--banner", "0px");
-      syncChrome();
-      if (promoTimer) window.clearInterval(promoTimer);
-    });
-  }
-
   var menuButtons = document.querySelectorAll("[data-menu-button]");
 
   function closeMenus(except) {
@@ -91,11 +63,11 @@
     });
     if (item) {
       item.addEventListener("mouseenter", function () {
-        if (!window.matchMedia("(hover: hover) and (min-width: 1200px)").matches) return;
+        if (!window.matchMedia("(hover: hover) and (min-width: 1025px)").matches) return;
         openMenu(button);
       });
       item.addEventListener("mouseleave", function () {
-        if (!window.matchMedia("(hover: hover) and (min-width: 1200px)").matches) return;
+        if (!window.matchMedia("(hover: hover) and (min-width: 1025px)").matches) return;
         closeMenus();
       });
     }
@@ -129,7 +101,7 @@
   }
 
   document.addEventListener("click", function (event) {
-    if (!event.target.closest(".nav-item")) closeMenus();
+    if (!event.target.closest(".nav-item-wrap")) closeMenus();
     if (!event.target.closest("[data-lang]")) closeLang();
   });
 
@@ -282,10 +254,29 @@
   document.querySelectorAll("[data-copy]").forEach(function (button) {
     var label = button.textContent;
     var inline = button.hasAttribute("data-copy-inline");
+    var codeLine = button.closest(".code-line");
+    var codeEl = codeLine ? codeLine.querySelector(".code") : null;
+    var restoreTimer = 0;
     button.addEventListener("click", function () {
       var code = button.getAttribute("data-copy-code") || "BFCM2026";
       var status = document.getElementById(button.getAttribute("data-copy-status") || "copy-status");
+      if (codeEl) {
+        codeEl.textContent = "Copied";
+        if (status) status.textContent = "";
+        window.clearTimeout(restoreTimer);
+        restoreTimer = window.setTimeout(function () {
+          codeEl.textContent = code;
+        }, 2000);
+      }
       copyText(code, function (ok) {
+        if (codeEl) {
+          if (!ok) {
+            window.clearTimeout(restoreTimer);
+            codeEl.textContent = code;
+            if (status) status.textContent = "Select BFCM2026 and copy it manually.";
+          }
+          return;
+        }
         var message = ok ? "Copied" : "Select BFCM2026 and copy it manually.";
         if (status) status.textContent = inline ? message : (ok ? "Code copied." : message);
         if (!inline) button.textContent = ok ? "Copied" : label;
@@ -436,30 +427,10 @@
 
   function mountOfficialPricing() {
     var stage = document.getElementById("plans-stage");
-    var indicator = document.getElementById("plans-indicator");
-    var tabs = document.querySelector(".price-tabs-track");
-    if (!stage || !tabs) return;
+    if (!stage) return;
 
     var shopify = "https://apps.shopify.com/17track?utm_source=www.17track.com&utm_medium=pricing&utm_campaign=button";
-    var returnsHref = "https://www.17returns.com?utm_source=www.17track.com&utm_medium=pricing&utm_campaign=button";
-    var apiHref = "https://www.17track.net/en/api?utm_source=www.17track.com&utm_medium=pricing&utm_campaign=button";
     var contact = "https://www.17track.com/en/contact-us";
-    var returnsBasics = [
-      "Green return",
-      "Unfulfilled order cancellation",
-      "Basic workflows",
-      "Rule configuration and process automation",
-      "AI rule builder",
-      "AI multi-language localization"
-    ];
-    var apiFeatures = [
-      "3,500+ carriers supported",
-      "Batch tracking and automatic updates",
-      "Shipment dashboard and management",
-      "Carrier identification and auto-matching",
-      "HTTP protocol, compatible with all systems",
-      "SLA commitment to 99.9% high availability"
-    ];
 
     var catalog = {
       tracking: {
@@ -547,104 +518,10 @@
           cta: "Contact Us",
           href: contact
         }
-      },
-      returns: {
-        href: returnsHref,
-        cta: "Start Free Trial",
-        quotaLabel: "Returns / Month",
-        periodMode: "month",
-        keepQuota: true,
-        saveText: "Save ~18%",
-        cards: [
-          {
-            name: "Free",
-            free: true,
-            desc: "Ideal for no-return refunds and basic after-sales automation, reducing return costs",
-            quotaMonth: "10 returns per month",
-            quotaYear: "10 returns per year",
-            featureTitle: "Free plan benefits",
-            features: returnsBasics
-          },
-          {
-            name: "Basic",
-            desc: "Ideal for no-return refunds and basic after-sales automation, reducing return costs",
-            featureTitle: "Basic plan benefits",
-            overage: "Additional Returns: $0.20 each",
-            month: [[20, 5], [60, 12], [100, 18], [200, 32], [400, 59]],
-            year: [[20, 4], [60, 10], [100, 15], [200, 27], [400, 48]],
-            features: returnsBasics
-          },
-          {
-            name: "Pro",
-            desc: "Automate returns and exchanges with a branded self-service experience.",
-            featureTitle: "24 Core Features",
-            overage: "Additional Returns: $0.50 each",
-            month: [[20, 11], [60, 29], [100, 44], [200, 79], [400, 139]],
-            year: [[20, 9], [60, 24], [100, 36], [200, 65], [400, 115]],
-            features: [
-              "Branded Portal · Self-Service Returns · Tracking · Embedded Center",
-              "Refunds · Exchanges · Keep-It Refunds · Cancellations",
-              "AI Rules · Workflows · Smart Queues · AI Assistant",
-              "Store Credit Refunds · Fees · Price Difference Settlement",
-              "Shipping Rate Comparison · Aggregated/Own Carriers · Labels · QR Codes",
-              "Branded Emails · Shopify · Multi-Store · Multi-Language"
-            ]
-          },
-          {
-            name: "Max",
-            popular: true,
-            desc: "Turn returns into a new revenue stream.",
-            featureTitle: "Everything in Pro, plus:",
-            overage: "Additional Returns: $1.20 each",
-            month: [[20, 29], [60, 79], [100, 119], [200, 209], [400, 369]],
-            year: [[20, 24], [60, 65], [100, 99], [200, 169], [400, 299]],
-            features: [
-              "Advanced Workflows (Amount / Country / Delivery Time)",
-              "Compensation-Based Retention",
-              "Store Credit Retention",
-              "Exchange-Based Retention",
-              "Revenue Recovery Dashboard",
-              "Open API Access"
-            ]
-          }
-        ],
-        custom: {
-          title: "Enterprise Plan",
-          desc: "Tailored for Enterprise Merchants with Custom Return Capacity and Deep Integrations",
-          featureTitle: "Includes everything in Max, plus:",
-          features: [
-            "Enterprise Benefits",
-            "Custom Return Volume",
-            "Dedicated Customer Success Manager",
-            "SLA & Priority Support",
-            "Custom Integrations",
-            "Data Migration Service",
-            "Multi-Brand / Multi-Region Deployment"
-          ],
-          cta: "Get a Quote",
-          href: contact
-        }
-      },
-      api: {
-        href: apiHref,
-        cta: "Get Started",
-        cards: [
-          { name: "Basic", api: true, unit: "0.0238", line: "5,000 quota / $ 119", featureTitle: "What's in Basic", features: apiFeatures },
-          { name: "Advanced", api: true, unit: "0.0228", line: "25,000 quota / $ 569", featureTitle: "What's in Advanced", features: apiFeatures },
-          { name: "Pro", api: true, unit: "0.0191", line: "150,000 quota / $ 2,869", featureTitle: "What's in Pro", features: apiFeatures },
-          { name: "Flagship", api: true, popular: true, unit: "0.0186", line: "500,000 quota / $ 9,299", featureTitle: "What's in Flagship", features: apiFeatures }
-        ],
-        custom: {
-          title: "Custom",
-          desc: "For customized services, please scan the QR code to contact our sales team.",
-          cta: "Contact Us",
-          href: contact
-        }
       }
     };
 
-    var order = ["tracking", "returns", "api"];
-    var yearly = { tracking: false, returns: false };
+    var yearly = { tracking: false };
 
     function el(tag, className) {
       var node = document.createElement(tag);
@@ -680,17 +557,28 @@
       return block;
     }
 
-    function cardHead(card, plain) {
-      var head = el("div", "price-card-head" + (plain ? " is-plain" : ""));
+    function bfMark() {
+      var mark = el("span", "price-bf");
+      mark.textContent = "Black Friday";
+      return mark;
+    }
+
+    function formatUsd(amount) {
+      var n = Math.round(Number(amount) * 100) / 100;
+      var body = Math.abs(n - Math.round(n)) < 0.001 ? String(Math.round(n)) : n.toFixed(2);
+      return "US $" + body;
+    }
+
+    function paintFigures(cardEl, original) {
+      cardEl.querySelector(".price-figure").textContent = formatUsd(Number(original) / 2);
+      var was = cardEl.querySelector(".price-was");
+      if (was) was.textContent = formatUsd(original);
+    }
+
+    function cardHead(card) {
+      var head = el("div", "price-card-head");
       var heading = el("h3");
-      var name = el("span");
-      name.textContent = card.name;
-      heading.appendChild(name);
-      if (card.popular) {
-        var chip = el("span", "price-pop");
-        chip.textContent = "Popular";
-        heading.appendChild(chip);
-      }
+      heading.textContent = card.name;
       head.appendChild(heading);
       if (card.desc) {
         var desc = el("p");
@@ -705,9 +593,6 @@
       article.setAttribute("data-card", card.name);
       article.appendChild(cardHead(card));
       var offer = el("div", "price-offer");
-      var spacer = el("div", "price-bill");
-      spacer.setAttribute("aria-hidden", "true");
-      offer.appendChild(spacer);
       var amount = el("p", "price-amount");
       var figure = el("span", "price-figure");
       figure.textContent = "US $0";
@@ -739,33 +624,17 @@
       article.setAttribute("data-product", product.id);
       article.appendChild(cardHead(card));
       var offer = el("div", "price-offer");
-      var bill = el("div", "price-bill");
-      var label = el("label");
-      var input = el("input");
-      input.type = "checkbox";
-      input.id = "bill-" + product.id + "-" + card.name.toLowerCase();
-      input.setAttribute("data-yearly", "");
-      input.setAttribute("data-product", product.id);
-      var toggle = el("span", "price-switch");
-      toggle.setAttribute("aria-hidden", "true");
-      var caption = el("span");
-      caption.textContent = "Billed yearly";
-      label.appendChild(input);
-      label.appendChild(toggle);
-      label.appendChild(caption);
-      bill.appendChild(label);
-      if (product.saveText) {
-        var save = el("span", "price-save");
-        save.textContent = product.saveText;
-        save.hidden = true;
-        bill.appendChild(save);
-      }
-      offer.appendChild(bill);
-      var amount = el("p", "price-amount");
-      amount.appendChild(el("span", "price-figure"));
+      var amount = el("p", "price-amount is-offer");
+      amount.appendChild(el("s", "price-was"));
+      var sale = el("span", "price-sale");
+      sale.appendChild(el("span", "price-figure"));
       var period = el("span", "price-period");
       period.textContent = "/month";
-      amount.appendChild(period);
+      sale.appendChild(period);
+      var off = el("span", "price-off");
+      off.textContent = "35% off";
+      sale.appendChild(off);
+      amount.appendChild(sale);
       offer.appendChild(amount);
       var quota = el("div", "price-quota");
       var select = el("select");
@@ -784,27 +653,8 @@
       article.appendChild(offer);
       article.appendChild(outbound(product.href, product.cta, "price-cta" + (card.popular ? " is-filled" : "")));
       article.appendChild(featureBlock(card.featureTitle, card.features));
-      return article;
-    }
-
-    function apiCard(product, card) {
-      var article = el("article", "price-card" + (card.popular ? " is-popular" : ""));
-      article.appendChild(cardHead(card, true));
-      var offer = el("div", "price-offer is-api");
-      var unit = el("div");
-      var label = el("p", "price-unit-label");
-      label.textContent = "Unit Price";
-      var figure = el("p", "price-unit-figure");
-      figure.textContent = "$ " + card.unit;
-      unit.appendChild(label);
-      unit.appendChild(figure);
-      var line = el("p", "price-unit-line");
-      line.textContent = card.line;
-      offer.appendChild(unit);
-      offer.appendChild(line);
-      article.appendChild(offer);
-      article.appendChild(outbound(product.href, product.cta, "price-cta" + (card.popular ? " is-filled" : "")));
-      article.appendChild(featureBlock(card.featureTitle, card.features));
+      article.appendChild(bfMark());
+      if (card.popular) article.insertBefore(el("div", "price-ribbon"), article.firstChild).textContent = "Popular";
       return article;
     }
 
@@ -854,7 +704,7 @@
       var select = cardEl.querySelector("[data-quota]");
       fillSelect(select, isYear ? card.year : card.month, keepQuota);
       var selected = select.options[select.selectedIndex];
-      cardEl.querySelector(".price-figure").textContent = "US $" + selected.getAttribute("data-price");
+      paintFigures(cardEl, selected.getAttribute("data-price"));
       var annual = catalog[cardEl.getAttribute("data-product")].periodMode === "annual";
       cardEl.querySelector(".price-period").textContent = annual && isYear ? "/year" : "/month";
       var over = cardEl.querySelector(".price-over");
@@ -866,8 +716,9 @@
     function syncProduct(productId, keepQuota) {
       var panel = document.getElementById("plans-panel-" + productId);
       var isYear = yearly[productId];
-      panel.querySelectorAll("[data-yearly]").forEach(function (box) {
-        box.checked = isYear;
+      document.querySelectorAll(".bill-tabs [data-bill]").forEach(function (tab) {
+        var selected = (tab.getAttribute("data-bill") === "year") === !!isYear;
+        tab.setAttribute("aria-selected", selected ? "true" : "false");
       });
       panel.querySelectorAll("[data-card]").forEach(function (cardEl) {
         var card = findCard(productId, cardEl.getAttribute("data-card"));
@@ -881,75 +732,55 @@
       });
     }
 
-    function show(productId) {
-      order.forEach(function (id, index) {
-        var on = id === productId;
-        var tab = document.getElementById("plans-tab-" + id);
-        var panel = document.getElementById("plans-panel-" + id);
-        tab.setAttribute("aria-selected", on ? "true" : "false");
-        tab.tabIndex = on ? 0 : -1;
-        panel.hidden = !on;
-        if (on && indicator) indicator.style.setProperty("--i", String(index));
+    var head = document.getElementById("plans-lead") || document.getElementById("plans-title");
+    if (head && !head.parentElement.querySelector(".bill-tabs")) {
+      var tabs = el("div", "bill-tabs");
+      tabs.setAttribute("role", "tablist");
+      tabs.setAttribute("aria-label", "Billing period");
+      [["month", "Monthly"], ["year", "Yearly"]].forEach(function (item) {
+        var tab = el("button", "bill-tab");
+        tab.type = "button";
+        tab.setAttribute("role", "tab");
+        tab.setAttribute("data-bill", item[0]);
+        tab.setAttribute("aria-selected", item[0] === "month" ? "true" : "false");
+        tab.textContent = item[1];
+        if (item[0] === "year") {
+          var mark = el("span", "bill-bf");
+          mark.textContent = "Black Friday";
+          tab.appendChild(mark);
+        }
+        tabs.appendChild(tab);
+      });
+      head.insertAdjacentElement("afterend", tabs);
+      tabs.addEventListener("click", function (event) {
+        var tab = event.target.closest("[data-bill]");
+        if (!tab) return;
+        yearly.tracking = tab.getAttribute("data-bill") === "year";
+        syncProduct("tracking", catalog.tracking.keepQuota);
       });
     }
 
     stage.replaceChildren();
-    order.forEach(function (id) {
-      var product = catalog[id];
-      product.id = id;
-      var panel = el("div", "price-panel");
-      panel.id = "plans-panel-" + id;
-      panel.setAttribute("role", "tabpanel");
-      panel.setAttribute("aria-labelledby", "plans-tab-" + id);
-      panel.hidden = id !== "tracking";
-      var grid = el("div", "price-cards");
-      product.cards.forEach(function (card) {
-        if (card.api) grid.appendChild(apiCard(product, card));
-        else if (card.free) grid.appendChild(freeCard(product, card));
-        else grid.appendChild(paidCard(product, card));
-      });
-      panel.appendChild(grid);
-      if (product.custom) panel.appendChild(customBar(product.custom));
-      stage.appendChild(panel);
-      if (product.cards.some(function (card) { return card.month || card.free; })) syncProduct(id, false);
+    var product = catalog.tracking;
+    product.id = "tracking";
+    var panel = el("div", "price-panel");
+    panel.id = "plans-panel-tracking";
+    var grid = el("div", "price-cards");
+    product.cards.forEach(function (card) {
+      grid.appendChild(card.free ? freeCard(product, card) : paidCard(product, card));
     });
-
-    tabs.addEventListener("click", function (event) {
-      var tab = event.target.closest("[data-plan-tab]");
-      if (!tab) return;
-      show(tab.getAttribute("data-plan-tab"));
-    });
-
-    tabs.addEventListener("keydown", function (event) {
-      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-      var buttons = Array.prototype.slice.call(tabs.querySelectorAll("[data-plan-tab]"));
-      var current = 0;
-      buttons.forEach(function (button, index) {
-        if (button.getAttribute("aria-selected") === "true") current = index;
-      });
-      var next = event.key === "ArrowRight"
-        ? (current + 1) % buttons.length
-        : (current - 1 + buttons.length) % buttons.length;
-      event.preventDefault();
-      show(buttons[next].getAttribute("data-plan-tab"));
-      buttons[next].focus();
-    });
+    panel.appendChild(grid);
+    if (product.custom) panel.appendChild(customBar(product.custom));
+    stage.appendChild(panel);
+    syncProduct("tracking", false);
 
     stage.addEventListener("change", function (event) {
       var target = event.target;
-      if (target.matches("[data-yearly]")) {
-        var productId = target.getAttribute("data-product");
-        yearly[productId] = target.checked;
-        syncProduct(productId, catalog[productId].keepQuota);
-        return;
-      }
       if (target.matches("[data-quota]")) {
         var cardEl = target.closest(".price-card");
         var selected = target.options[target.selectedIndex];
-        cardEl.querySelector(".price-figure").textContent = "US $" + selected.getAttribute("data-price");
+        paintFigures(cardEl, selected.getAttribute("data-price"));
       }
     });
-
-    show("tracking");
   }
 })();
