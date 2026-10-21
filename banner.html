@@ -55,9 +55,10 @@
 
     .page {
       margin-top: 20px;
-      padding-bottom: 72px;
+      padding-bottom: 0;
     }
 
+    .page[data-adapt="desktop"] { width: 950px; }
     .page[data-adapt="tablet"] { width: min(768px, calc(100% - 32px)); }
     .page[data-adapt="mobile"] { width: min(390px, calc(100% - 32px)); }
 
@@ -122,7 +123,7 @@
     .tabs button[aria-selected="true"] .adapt-size { opacity: 0.78; }
 
     .tabs button:focus-visible {
-      outline: 2px solid var(--ink);
+      outline: 2px solid var(--border-focus);
       outline-offset: 2px;
     }
 
@@ -140,6 +141,14 @@
       border-radius: 12px;
       border: 1px solid #fff0bf;
       background: linear-gradient(90deg, #1c1c1c 0%, #333333 100%);
+    }
+
+    .page[data-adapt="desktop"] .banner {
+      width: 100%;
+    }
+
+    .page[data-adapt="desktop"] .banner-body {
+      min-height: 198.5px;
     }
 
     .glow {
@@ -208,10 +217,14 @@
     }
 
     .art {
-      position: relative;
+      position: absolute;
       z-index: 2;
-      width: 100%;
-      height: 140px;
+      top: auto;
+      right: 12px;
+      bottom: 24px;
+      left: auto;
+      width: 136px;
+      height: 124px;
       pointer-events: none;
     }
 
@@ -244,6 +257,27 @@
       white-space: pre-line;
     }
 
+    html[lang="zh-Hans"] .title {
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-weight: 700;
+    }
+
+    html[lang="zh-Hans"] .sub,
+    html[lang="zh-Hans"] .banner-cta,
+    html[lang="zh-Hans"] .timer-label,
+    html[lang="zh-Hans"] .units span,
+    html[lang="zh-Hans"] .pchip,
+    html[lang="zh-Hans"] .ptimer-label,
+    html[lang="zh-Hans"] .punit span {
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-weight: 500;
+    }
+
+    html[lang="zh-Hans"] .pbadge {
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-weight: 700;
+    }
+
     .sparkle {
       display: block;
       width: 29px;
@@ -257,7 +291,7 @@
       align-items: center;
       justify-content: flex-start;
       gap: 14px;
-      width: 100%;
+      width: max-content;
       max-width: 100%;
       min-width: 0;
     }
@@ -283,6 +317,8 @@
       min-width: 0;
     }
 
+    .sub-line:empty { display: none; }
+
     @container banner (min-width: 700px) {
       .offer-row { flex-wrap: nowrap; }
     }
@@ -307,50 +343,67 @@
 
     .offer span:empty { display: none; }
 
+    .offer[hidden] { display: none; }
+
     .offer-num {
       font-size: 20.211px;
       line-height: 28.421px;
+    }
+
+    .gift-set {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 152px;
+      height: 137px;
+      transform: scale(0.84);
+      transform-origin: bottom right;
     }
 
     .gift,
     .piece {
       position: absolute;
       display: block;
-      object-fit: contain;
+      object-fit: cover;
+      max-width: none;
     }
 
     .gift {
-      left: 50%;
-      top: 50%;
-      width: 120px;
-      height: 120px;
-      transform: translate(-50%, -50%);
-    }
-
-    .banner-b .gift {
+      left: 14px;
+      top: 0;
       width: 128px;
       height: 128px;
-      transform: translate(-50%, -50%) rotate(15deg);
     }
 
     .piece-a {
-      left: calc(50% - 74px);
-      top: 22px;
+      left: 0;
+      top: 28px;
       width: 42px;
       height: 40px;
     }
 
     .piece-b {
-      left: calc(50% + 28px);
-      top: 16px;
-      width: 36.12px;
-      height: 33.98px;
+      left: 112.59px;
+      top: 31.15px;
+      width: 36.121px;
+      height: 33.978px;
       transform: rotate(75deg);
     }
 
-    .banner-b .piece-b {
-      width: 43.46px;
-      height: 40.88px;
+    .gift-pill {
+      position: absolute;
+      left: 17px;
+      top: 105px;
+      z-index: 1;
+      padding-inline: 14px;
+      font-family: inherit;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+    }
+
+    .gift-pill .offer-num {
+      font-weight: 700;
     }
 
     .timer {
@@ -425,6 +478,13 @@
       line-height: 16px;
     }
 
+    .banner .ptimer {
+      position: relative;
+      z-index: 3;
+      width: max-content;
+      max-width: 100%;
+    }
+
     @container banner (max-width: 699px) {
       .ticks,
       .units {
@@ -439,161 +499,143 @@
       }
 
       .colon { font-size: 16px; }
-
-      .art {
-        position: absolute;
-        top: auto;
-        left: auto;
-        right: 0;
-        bottom: 0;
-        width: 180px;
-        height: 140px;
-      }
-
-      .banner-b .art { right: 8px; bottom: 18px; }
     }
 
     @container banner (min-width: 700px) and (max-width: 919px) {
       .banner-body {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 108px 250px;
+        grid-template-columns: minmax(0, 1fr) 108px max-content;
         grid-template-areas: "copy art timer";
         align-items: center;
-        column-gap: 10px;
+        column-gap: 12px;
         row-gap: 0;
         padding: 18px 16px 18px 20px;
       }
 
       .copy { grid-area: copy; width: auto; }
+      .banner-c .banner-body {
+        grid-template-columns: minmax(0, 1fr) 108px;
+        grid-template-areas: "copy art";
+      }
       .banner-b .copy { padding-right: 8px; }
       .art {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
         grid-area: art;
         width: 108px;
-        height: 120px;
+        height: 98px;
         justify-self: center;
       }
-      .timer { grid-area: timer; justify-self: end; }
-
-      .gift { width: 100px; height: 100px; }
-      .banner-b .gift { width: 108px; height: 108px; }
-
-      .piece-a {
-        left: -4px;
-        top: 22px;
-        width: 32px;
-        height: 30px;
+      .gift-set {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: auto;
+        bottom: auto;
+        transform: scale(0.71);
+        transform-origin: top left;
       }
-
-      .piece-b {
-        left: auto;
-        right: -6px;
-        top: 10px;
-        width: 30px;
-        height: 28px;
-      }
-
-      .banner-b .piece-b { width: 34px; height: 32px; }
+      .ptimer { grid-area: timer; justify-self: end; }
     }
 
     @container banner (min-width: 920px) {
       .banner-body {
-        display: block;
-        min-height: 124px;
-        padding: 26px 24px 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 152px max-content;
+        grid-template-areas: "copy art timer";
+        align-items: center;
+        column-gap: 12px;
+        row-gap: 0;
+        min-height: 168px;
+        padding: 20px 16px;
       }
 
-      .banner-b .banner-body { min-height: 163px; }
+      .copy {
+        grid-area: copy;
+        width: auto;
+        max-width: none;
+      }
 
-      .banner-a .copy { max-width: 454px; }
-      .banner-b .copy { max-width: 428px; }
-      .banner-a .title { white-space: nowrap; }
+      .banner-a .title-line,
+      .banner-a .title,
+      .banner-a .sub,
+      .banner-c .title-line,
+      .banner-c .title {
+        flex: none;
+        width: max-content;
+        max-width: 100%;
+        white-space: nowrap;
+      }
+
+      .banner-c .banner-body {
+        grid-template-columns: minmax(0, 1fr) 168px;
+        grid-template-areas: "copy art";
+        padding-right: 28px;
+      }
+
+      .banner-c .sub {
+        max-width: 620px;
+      }
+
+      .banner-c .glow-center {
+        left: auto;
+        right: 48px;
+      }
+
+      .banner-a .sub-line {
+        display: inline;
+        max-width: none;
+      }
+
+      .banner-a .sub-line:not(:empty) + .sub-line:not(:empty)::before {
+        content: " · ";
+      }
 
       .glow-left {
         width: 982px;
         height: 982px;
         left: -467px;
-        top: -434px;
+        top: -421px;
       }
 
       .glow-center {
-        width: 288px;
-        height: 288px;
-        left: 419px;
-        top: -48px;
+        width: 287.8px;
+        height: 287.8px;
+        left: 418px;
+        top: -49px;
       }
 
       .art {
-        position: absolute;
-        inset: 0;
-        width: auto;
-        height: auto;
-      }
-
-      .timer {
-        position: absolute;
-        top: 15px;
-        right: 34px;
-        width: 250px;
-      }
-
-      .banner-b .timer { top: 36px; }
-
-      .banner-a .gift {
-        left: 506px;
-        top: 3px;
-        width: 128px;
-        height: 128px;
-        transform: none;
-      }
-
-      .banner-a .piece-a {
-        left: 492px;
-        top: 18px;
-        width: 42px;
-        height: 40px;
-        transform: none;
-      }
-
-      .banner-a .piece-b {
-        left: 637.42px;
-        top: 21.15px;
+        position: relative;
+        top: auto;
         right: auto;
-        width: 36.12px;
-        height: 33.98px;
-        transform: rotate(75deg);
+        bottom: auto;
+        left: auto;
+        grid-area: art;
+        width: 152px;
+        height: 137px;
+        justify-self: center;
       }
 
-      .banner-b .gift {
-        left: 517.44px;
-        top: 30.18px;
-        width: 143.98px;
-        height: 143.98px;
-        transform: rotate(15deg);
-      }
-
-      .banner-b .piece-a {
-        left: 464px;
-        top: 36px;
-        width: 42px;
-        height: 40px;
+      .gift-set {
+        position: relative;
+        right: auto;
+        bottom: auto;
         transform: none;
       }
 
-      .banner-b .piece-b {
-        left: 632.13px;
-        top: 29.84px;
-        right: auto;
-        width: 43.46px;
-        height: 40.88px;
-        transform: rotate(75deg);
-      }
+      .ptimer { grid-area: timer; justify-self: end; }
     }
 
     .banner-cta {
       appearance: none;
       position: relative;
       z-index: 4;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       max-width: 100%;
       margin-top: 12px;
       padding: 10px 16px;
@@ -602,12 +644,20 @@
       background: #eaf4ff;
       color: #303030;
       font-family: inherit;
-      font-weight: 550;
+      font-weight: 500;
       font-size: 14px;
       line-height: 20px;
       text-align: center;
-      white-space: normal;
+      white-space: nowrap;
       cursor: pointer;
+    }
+
+    .banner-b .banner-cta { margin-top: 15px; }
+
+    .banner-cta img {
+      width: 20px;
+      height: 20px;
+      flex: none;
     }
 
     .banner-cta:hover { background: #dcedff; }
@@ -881,6 +931,75 @@
       text-align: center;
     }
 
+    .modal-end-extra {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .modal-offers {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+    }
+
+    .modal-offer {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .modal-offer:not(:last-child) {
+      border-right: 1px solid #616161;
+    }
+
+    .modal-offer-label {
+      flex: 1 0 auto;
+      width: 100%;
+      min-height: 32px;
+      margin: 0;
+      color: #cbd5e1;
+      font-weight: 450;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .modal-offer:first-child .modal-offer-label { color: #fff; }
+
+    .modal-offer-value {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px;
+      width: 100%;
+      margin: 0;
+    }
+
+    .modal-offer-num {
+      color: #fbbf24;
+      font-weight: 650;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .modal-offer-unit {
+      color: #e3e3e3;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
     .modal-clock {
       display: grid;
       grid-template-columns: 56px 30px 56px 30px 56px 30px 56px;
@@ -986,6 +1105,379 @@
       }
       .modal-copy br { display: none; }
     }
+
+    @container modal (max-width: 420px) {
+      .modal-offers { flex-direction: column; }
+      .modal-offer:not(:last-child) {
+        border-right: 0;
+        border-bottom: 1px solid #616161;
+      }
+    }
+
+    .modal-stage {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 28px 20px;
+      width: min(1260px, calc(100% - 32px));
+      margin: 28px auto 0;
+      padding-bottom: 72px;
+    }
+
+    body[data-adapt="tablet"] .modal-stage {
+      width: min(768px, calc(100% - 32px));
+    }
+
+    body[data-adapt="mobile"] .modal-stage {
+      width: min(390px, calc(100% - 32px));
+    }
+
+    .modal-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      width: min(620px, 100%);
+      margin: 0;
+    }
+
+    .modal-preview-caption {
+      margin: 0;
+      color: #616161;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .modal-preview .modal-panel {
+      width: 100%;
+      max-height: none;
+    }
+
+    .pbanner {
+      container-type: inline-size;
+      container-name: pbanner;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid #fff0bf;
+      background: linear-gradient(90deg, #1c1c1c 0%, #333333 100%);
+    }
+
+    .pbanner .watermark { top: -3.2cqw; }
+
+    .pbanner-row {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 25px;
+    }
+
+    .pcopy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ppills,
+    .ptitle-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .ppills { gap: 8px; }
+    .ptitle-row { gap: 12px; padding-top: 4px; }
+
+    .pbadge,
+    .pchip,
+    .pdeal {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .pbadge {
+      gap: 4px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ffb657 0%, #ffe99d 50%, #db9350 100%);
+      color: #261a00;
+      font-weight: 800;
+      font-size: 11px;
+      line-height: 16.5px;
+      letter-spacing: 0.275px;
+      text-transform: uppercase;
+    }
+
+    .pbadge img { width: 8.4px; height: 10.5px; }
+
+    .pchip {
+      padding: 3px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #dbeafe;
+      font-size: 11px;
+      line-height: 16.5px;
+      font-weight: 450;
+    }
+
+    .ptitle {
+      margin: 0;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 30px;
+      letter-spacing: -0.6px;
+      background: linear-gradient(90deg, #ffffff 0%, #ffb657 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .pdeal {
+      gap: 4px;
+      min-height: 20px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: #ffd6a4;
+      color: #5e4200;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 550;
+    }
+
+    .pdeal img { width: 20px; height: 20px; flex: none; }
+
+    .pdesc {
+      margin: 0;
+      color: rgba(219, 234, 254, 0.9);
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 21px;
+    }
+
+    .banner .ppills { margin-bottom: 8px; }
+
+    .ptimer {
+      position: relative;
+      z-index: 4;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(2px);
+    }
+
+    .ptimer-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fcd34d;
+      font-size: 11px;
+      line-height: 16.5px;
+      font-weight: 450;
+      white-space: nowrap;
+    }
+
+    .ptimer-label img { width: 12px; height: 12px; }
+
+    .pticks {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .punit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .ptick {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      color: #fff;
+      font-weight: 800;
+      font-size: 22px;
+      line-height: 33px;
+      letter-spacing: -0.55px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ptick-sec {
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+    }
+
+    .punit span {
+      color: #bfdbfe;
+      font-size: 10px;
+      line-height: 13px;
+      font-weight: 450;
+    }
+
+    .pcolon {
+      align-self: flex-start;
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .page[data-adapt="tablet"] .pbanner-row,
+    .page[data-adapt="mobile"] .pbanner-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .page[data-adapt="mobile"] .pbanner-row { padding: 18px; }
+
+    @container banner (max-width: 699px) {
+      .banner .ptimer {
+        align-self: flex-start;
+        width: max-content;
+        max-width: 100%;
+      }
+    }
+
+    @container banner (max-width: 480px) {
+      .banner-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 128px;
+        grid-template-areas:
+          "copy copy"
+          "timer art";
+        align-items: center;
+        column-gap: 8px;
+        row-gap: 12px;
+        padding-bottom: 16px;
+      }
+
+      .copy { grid-area: copy; }
+
+      .banner-c .banner-body {
+        grid-template-columns: minmax(0, 1fr) 128px;
+        grid-template-areas: "copy art";
+      }
+
+      .art {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        grid-area: art;
+        width: 128px;
+        height: 116px;
+        justify-self: end;
+        align-self: center;
+      }
+
+      .gift-set {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: auto;
+        bottom: auto;
+        transform: scale(0.84);
+        transform-origin: top left;
+      }
+
+      .banner .ptimer {
+        grid-area: timer;
+        justify-self: start;
+        align-self: center;
+        display: grid;
+        justify-items: start;
+        gap: 4px;
+        width: max-content;
+        max-width: 100%;
+        padding: 8px 6px 6px;
+        border-radius: 10px;
+      }
+
+      .banner .ptimer-label {
+        width: 0;
+        min-width: 100%;
+        gap: 4px;
+        font-size: 10px;
+        line-height: 14px;
+        white-space: normal;
+      }
+
+      .banner .ptimer-label img {
+        width: 10px;
+        height: 10px;
+      }
+
+      .banner .pticks { gap: 3px; }
+
+      .banner .punit { gap: 1px; }
+
+      .banner .ptick {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        font-size: 16px;
+        line-height: 20px;
+        letter-spacing: -0.3px;
+      }
+
+      .banner .pcolon {
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .banner .punit span {
+        font-size: 9px;
+        line-height: 12px;
+        white-space: nowrap;
+      }
+    }
+
+    .page[data-adapt="mobile"] .banner .copy,
+    .page[data-adapt="mobile"] .banner .title-line,
+    .page[data-adapt="mobile"] .banner .title,
+    .page[data-adapt="mobile"] .banner .offer-row,
+    .page[data-adapt="mobile"] .banner .sub {
+      width: 100%;
+      max-width: none;
+    }
+
+    @container banner (max-width: 699px) {
+      .copy,
+      .title-line,
+      .title,
+      .offer-row,
+      .sub {
+        width: 100%;
+        max-width: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1008,12 +1500,50 @@
   </header>
   <main class="page" id="banners" data-adapt="desktop">
     <div class="stack">
+      <article class="banner banner-c">
+        <img class="glow glow-left" src="assets/glow-left.svg" alt="">
+        <img class="glow glow-center" src="assets/glow-center.svg" alt="">
+        <p class="watermark" aria-hidden="true">BFCM2026</p>
+        <div class="banner-body">
+          <div class="copy">
+            <div class="title-line">
+              <h2 class="title" data-t="preheat.title"></h2>
+              <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
+            </div>
+            <div class="offer-row">
+              <p class="sub">
+                <span class="sub-line" data-t="preheat.sub"></span>
+              </p>
+            </div>
+            <button type="button" class="banner-cta" data-modal="live">
+              <span data-t="modal.cta"></span>
+              <img src="assets/arrow-right.svg" alt="" width="20" height="20">
+            </button>
+          </div>
+          <div class="art" aria-hidden="true">
+            <div class="gift-set">
+              <img class="gift" src="assets/gift.png" alt="" width="128" height="128">
+              <img class="piece piece-a" src="assets/confetti.png" alt="" width="42" height="40">
+              <img class="piece piece-b" src="assets/confetti.png" alt="" width="36" height="34">
+              <span class="offer gift-pill"><span data-t="offer.pre">Up to</span><span class="offer-num" data-t="offer.num">35%</span><span data-t="offer.post">off</span></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
       <article class="banner banner-a">
         <img class="glow glow-left" src="assets/glow-left.svg" alt="">
         <img class="glow glow-center" src="assets/glow-center.svg" alt="">
         <p class="watermark" aria-hidden="true">BFCM2026</p>
         <div class="banner-body">
           <div class="copy">
+            <div class="ppills">
+              <span class="pbadge">
+                <img src="assets/pricing-bolt.svg" alt="">
+                <span data-t="pricing.badge"></span>
+              </span>
+              <span class="pchip" data-t="pricing.chip"></span>
+            </div>
             <div class="title-line">
               <h2 class="title" data-t="a.title"></h2>
               <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
@@ -1023,43 +1553,33 @@
                 <span class="sub-line" data-t="a.sub1"></span>
                 <span class="sub-line" data-t="a.sub2"></span>
               </p>
-              <span class="offer">
-                <span data-t="offer.pre"></span>
-                <span class="offer-num" data-t="offer.num"></span>
-                <span data-t="offer.post"></span>
-              </span>
             </div>
-            <button type="button" class="banner-cta" data-modal="live" data-t="modal.cta"></button>
+            <button type="button" class="banner-cta" data-modal="live">
+              <span data-t="modal.cta"></span>
+              <img src="assets/arrow-right.svg" alt="" width="20" height="20">
+            </button>
           </div>
           <div class="art" aria-hidden="true">
-            <img class="gift" src="assets/gift.png" alt="">
-            <img class="piece piece-a" src="assets/confetti.png" alt="">
-            <img class="piece piece-b" src="assets/confetti.png" alt="">
-          </div>
-          <div class="timer">
-            <div class="timer-label">
-              <img src="assets/clock.svg" alt="">
-              <span data-t="timer"></span>
+            <div class="gift-set">
+              <img class="gift" src="assets/gift.png" alt="" width="128" height="128">
+              <img class="piece piece-a" src="assets/confetti.png" alt="" width="42" height="40">
+              <img class="piece piece-b" src="assets/confetti.png" alt="" width="36" height="34">
+              <span class="offer gift-pill"><span data-t="offer.pre">Up to</span><span class="offer-num" data-t="offer.num">35%</span><span data-t="offer.post">off</span></span>
             </div>
-            <div class="clock">
-              <div class="ticks">
-                <b class="tick" data-part="d">47</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="h">20</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="m">34</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="s">29</b>
-              </div>
-              <div class="units">
-                <span data-t="units.d"></span>
-                <span></span>
-                <span data-t="units.h"></span>
-                <span></span>
-                <span data-t="units.m"></span>
-                <span></span>
-                <span data-t="units.s"></span>
-              </div>
+          </div>
+          <div class="ptimer">
+            <div class="ptimer-label">
+              <img src="assets/pricing-clock.svg" alt="">
+              <span data-t="pricing.timer"></span>
+            </div>
+            <div class="pticks">
+              <div class="punit"><b class="ptick" data-part="d">47</b><span data-t="units.d"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick" data-part="h">20</b><span data-t="units.h"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick" data-part="m">34</b><span data-t="units.m"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick ptick-sec" data-part="s">29</b><span data-t="units.s"></span></div>
             </div>
           </div>
         </div>
@@ -1071,6 +1591,13 @@
         <p class="watermark" aria-hidden="true">BFCM2026</p>
         <div class="banner-body">
           <div class="copy">
+            <div class="ppills">
+              <span class="pbadge">
+                <img src="assets/pricing-bolt.svg" alt="">
+                <span data-t="pricing.badge"></span>
+              </span>
+              <span class="pchip" data-t="pricing.chip"></span>
+            </div>
             <div class="title-line">
               <h2 class="title" data-t="b.title"></h2>
               <img class="sparkle" src="assets/sparkle.svg" alt="" width="29" height="29">
@@ -1080,49 +1607,50 @@
                 <span class="sub-line" data-t="b.sub1"></span>
                 <span class="sub-line" data-t="b.sub2"></span>
               </p>
-              <span class="offer">
-                <span data-t="offer.pre"></span>
-                <span class="offer-num" data-t="offer.num"></span>
-                <span data-t="offer.post"></span>
-              </span>
             </div>
-            <button type="button" class="banner-cta" data-modal="ending" data-t="modal.cta"></button>
+            <button type="button" class="banner-cta" data-modal="ending">
+              <span data-t="modal.cta"></span>
+              <img src="assets/arrow-right.svg" alt="" width="20" height="20">
+            </button>
           </div>
           <div class="art" aria-hidden="true">
-            <img class="gift" src="assets/gift.png" alt="">
-            <img class="piece piece-a" src="assets/confetti.png" alt="">
-            <img class="piece piece-b" src="assets/confetti.png" alt="">
-          </div>
-          <div class="timer">
-            <div class="timer-label">
-              <img src="assets/clock.svg" alt="">
-              <span data-t="timer"></span>
+            <div class="gift-set">
+              <img class="gift" src="assets/gift.png" alt="" width="128" height="128">
+              <img class="piece piece-a" src="assets/confetti.png" alt="" width="42" height="40">
+              <img class="piece piece-b" src="assets/confetti.png" alt="" width="36" height="34">
+              <span class="offer gift-pill"><span data-t="offer.pre">Up to</span><span class="offer-num" data-t="offer.num">35%</span><span data-t="offer.post">off</span></span>
             </div>
-            <div class="clock">
-              <div class="ticks">
-                <b class="tick" data-part="d">47</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="h">20</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="m">34</b>
-                <span class="colon">:</span>
-                <b class="tick" data-part="s">29</b>
-              </div>
-              <div class="units">
-                <span data-t="units.d"></span>
-                <span></span>
-                <span data-t="units.h"></span>
-                <span></span>
-                <span data-t="units.m"></span>
-                <span></span>
-                <span data-t="units.s"></span>
-              </div>
+          </div>
+          <div class="ptimer">
+            <div class="ptimer-label">
+              <img src="assets/pricing-clock.svg" alt="">
+              <span data-t="pricing.timer"></span>
+            </div>
+            <div class="pticks">
+              <div class="punit"><b class="ptick" data-part="d">47</b><span data-t="units.d"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick" data-part="h">20</b><span data-t="units.h"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick" data-part="m">34</b><span data-t="units.m"></span></div>
+              <span class="pcolon">:</span>
+              <div class="punit"><b class="ptick ptick-sec" data-part="s">29</b><span data-t="units.s"></span></div>
             </div>
           </div>
         </div>
       </article>
     </div>
   </main>
+
+  <section class="modal-stage" aria-label="弹窗状态">
+    <figure class="modal-preview" data-preview="live">
+      <figcaption class="modal-preview-caption">优惠已上线</figcaption>
+      <div class="modal-preview-slot"></div>
+    </figure>
+    <figure class="modal-preview" data-preview="ending">
+      <figcaption class="modal-preview-caption">即将结束</figcaption>
+      <div class="modal-preview-slot"></div>
+    </figure>
+  </section>
 
   <div class="modal" id="plan-modal" hidden>
     <div class="modal-backdrop" data-close></div>
@@ -1155,6 +1683,20 @@
             <span data-t="modal.live.body1"></span><br>
             <span data-t="modal.live.body2"></span>
           </p>
+          <div class="modal-offers">
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer1.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer1.value"></span><span class="modal-offer-unit" data-t="modal.offer1.unit"></span></p>
+            </div>
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer2.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer2.value"></span><span class="modal-offer-unit" data-t="modal.offer2.unit"></span></p>
+            </div>
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer3.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer3.value"></span><span class="modal-offer-unit" data-t="modal.offer3.unit"></span></p>
+            </div>
+          </div>
         </div>
 
         <div class="modal-ending" data-panel="ending">
@@ -1172,7 +1714,8 @@
           </p>
         </div>
 
-        <div class="modal-card" data-panel="ending">
+        <div class="modal-end-extra" data-panel="ending">
+          <div class="modal-card">
           <p class="modal-card-label" data-t="timer"></p>
           <div class="modal-clock">
             <b class="modal-tick" data-part="d">47</b>
@@ -1190,6 +1733,21 @@
             <span></span>
             <span class="modal-unit" data-t="units.s"></span>
           </div>
+          </div>
+          <div class="modal-offers">
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer1.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer1.value"></span><span class="modal-offer-unit" data-t="modal.offer1.unit"></span></p>
+            </div>
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer2.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer2.value"></span><span class="modal-offer-unit" data-t="modal.offer2.unit"></span></p>
+            </div>
+            <div class="modal-offer">
+              <p class="modal-offer-label" data-t="modal.offer3.label"></p>
+              <p class="modal-offer-value"><span class="modal-offer-num" data-t="modal.offer3.value"></span><span class="modal-offer-unit" data-t="modal.offer3.unit"></span></p>
+            </div>
+          </div>
         </div>
 
         <div class="modal-actions">
@@ -1203,18 +1761,30 @@
   <script>
     const copy = {
       zh: {
-        offer: { pre: "最高", num: "35%", post: "优惠" },
+        offer: { pre: "Up to", num: "35%", post: "off" },
         timer: "距离活动结束",
         units: { d: "天", h: "时", m: "分", s: "秒" },
         a: {
-          title: "黑色星期五，升级你的业务",
-          sub1: "折扣自动生效",
-          sub2: "年付方案限时优惠"
+          title: "黑五限时优惠，专属折扣已为您解锁",
+          sub1: "折扣自动生效 · 年付方案限时优惠",
+          sub2: ""
         },
         b: {
-          title: "黑色星期五即将收官，\n立即锁定全年最低价。",
-          sub1: "最后 72 小时倒计时。",
-          sub2: "错过将恢复原价，不再补货"
+          title: "黑五最后3天，\n立即锁定全年最低价。",
+          sub1: "最后 72 小时倒计时。错过将恢复原价，不再补货。",
+          sub2: ""
+        },
+        preheat: {
+          title: "黑五狂欢即将开启，年度优惠，敬请期待！",
+          sub: "专属套餐优惠即将揭晓，提前关注，解锁黑五限时福利。"
+        },
+        pricing: {
+          badge: "BLACK FRIDAY 黑五限时优惠",
+          chip: "优惠自动应用 · 年付套餐限时特惠",
+          title: "黑五限时优惠，专属折扣已为您解锁",
+          deal: "Up to 35% off",
+          desc: "全球峰值物流护航，自动化订单追踪、异常拦截与多语言品牌查询页。活动期间切换年付方案更超值",
+          timer: "距离活动结束"
         },
         modal: {
           cta: "前往方案与账单",
@@ -1234,22 +1804,49 @@
             badge: "最后机会 · BFCM2026",
             body1: "时间所剩无几，当前黑色星期五专属优惠即将到期。",
             body2: "活动结束后价格将恢复原价，今年不会再有更大的折扣。"
+          },
+          offer1: {
+            label: "新客户首次月付享 75% 优惠",
+            value: "25%",
+            unit: "优惠"
+          },
+          offer2: {
+            label: "首次购买年付",
+            value: "22%",
+            unit: "优惠"
+          },
+          offer3: {
+            label: "升级 / 扩容",
+            value: "+15%",
+            unit: "额外额度"
           }
         }
       },
       en: {
-        offer: { pre: "UP TO", num: "35%", post: "OFF" },
+        offer: { pre: "Up to", num: "35%", post: "off" },
         timer: "Time until the event ends",
         units: { d: "Days", h: "Hrs", m: "Min", s: "SECS" },
         a: {
-          title: "Black Friday, upgrade your business",
-          sub1: "Discount applied automatically",
-          sub2: "Limited time offer for annual plan"
+          title: "Black Friday offer unlocked for you",
+          sub1: "Discount applied automatically · Limited time offer for annual plan",
+          sub2: ""
         },
         b: {
-          title: "Black Friday is coming to a close,\nlock in the year's lowest price now.",
-          sub1: "Last 72 hours countdown.",
-          sub2: "Miss it and the price will revert to the original, no restocking"
+          title: "Last 3 days of Black Friday,\nlock in the year's lowest price now.",
+          sub1: "Last 72 hours countdown. Miss it and the price will revert to the original, no restocking",
+          sub2: ""
+        },
+        preheat: {
+          title: "Black Friday is almost here. Stay tuned!",
+          sub: "Exclusive plan offers are about to be revealed. Stay tuned and unlock limited-time Black Friday perks."
+        },
+        pricing: {
+          badge: "BLACK FRIDAY LIMITED OFFER",
+          chip: "Applied automatically · Annual plan limited offer",
+          title: "Black Friday offer unlocked for you",
+          deal: "Up to 35% off",
+          desc: "Peak-season logistics coverage, automated tracking, exception interception, and multilingual branded tracking pages. Annual plans are an even better deal during the event.",
+          timer: "Time until the event ends"
         },
         modal: {
           cta: "Go to Plan & Billing",
@@ -1269,22 +1866,49 @@
             badge: "LAST CHANCE · BFCM2026",
             body1: "Time is running out; the current Black Friday exclusive offer will soon expire.",
             body2: "After the event ends, prices will return to normal, and there won't be any bigger discounts this year."
+          },
+          offer1: {
+            label: "75% off for new customers on first purchase monthly",
+            value: "25%",
+            unit: "OFF"
+          },
+          offer2: {
+            label: "Annual payment for first purchase",
+            value: "22%",
+            unit: "OFF"
+          },
+          offer3: {
+            label: "Upgrade / Expand",
+            value: "+15%",
+            unit: "Extra quota"
           }
         }
       },
       fr: {
-        offer: { pre: "JUSQU'À", num: "−35%", post: "" },
-        timer: "Temps restant avant la fin",
+        offer: { pre: "Up to", num: "35%", post: "off" },
+        timer: "Temps jusqu'à la fin de l'événement",
         units: { d: "Jours", h: "H", m: "Min", s: "Sec" },
         a: {
-          title: "Black Friday, boostez votre activité",
-          sub1: "Remise appliquée automatiquement",
-          sub2: "Offre limitée au plan annuel"
+          title: "Offre Black Friday débloquée pour vous",
+          sub1: "Remise appliquée automatiquement · Offre limitée au plan annuel",
+          sub2: ""
         },
         b: {
-          title: "Le Black Friday touche à sa fin,\nverrouillez le prix le plus bas de l'année.",
-          sub1: "Compte à rebours des 72 dernières heures.",
-          sub2: "Passé ce délai, retour au prix d'origine, sans réassort"
+          title: "Les 3 derniers jours du Black Friday,\nverrouillez dès maintenant le prix le plus bas de l'année.",
+          sub1: "Compte à rebours des 72 dernières heures. Passé ce délai, retour au prix d'origine, sans réassort",
+          sub2: ""
+        },
+        preheat: {
+          title: "Black Friday is almost here. Stay tuned!",
+          sub: "Exclusive plan offers are about to be revealed. Stay tuned and unlock limited-time Black Friday perks."
+        },
+        pricing: {
+          badge: "BLACK FRIDAY OFFRE LIMITÉE",
+          chip: "Remise automatique · Offre limitée au plan annuel",
+          title: "Offre Black Friday débloquée pour vous",
+          deal: "Up to 35% off",
+          desc: "Couverture logistique en période de pointe, suivi automatisé, interception des anomalies et pages de suivi multilingues. L'abonnement annuel est encore plus avantageux pendant l'offre.",
+          timer: "Temps jusqu'à la fin de l'événement"
         },
         modal: {
           cta: "Accéder au plan et à la facturation",
@@ -1304,22 +1928,49 @@
             badge: "DERNIÈRE CHANCE · BFCM2026",
             body1: "Le temps presse : l'offre exclusive Black Friday expire bientôt.",
             body2: "Une fois l'événement terminé, les prix reviendront à la normale, et il n'y aura pas de remise plus importante cette année."
+          },
+          offer1: {
+            label: "75 % de réduction pour les nouveaux clients sur le premier achat mensuel",
+            value: "25%",
+            unit: "de réduction"
+          },
+          offer2: {
+            label: "Paiement annuel pour le premier achat",
+            value: "22%",
+            unit: "de réduction"
+          },
+          offer3: {
+            label: "Mise à niveau / Extension",
+            value: "+15%",
+            unit: "quota extra"
           }
         }
       },
       pt: {
-        offer: { pre: "ATÉ", num: "35%", post: "OFF" },
+        offer: { pre: "Up to", num: "35%", post: "off" },
         timer: "Tempo até ao fim do evento",
         units: { d: "Dias", h: "H", m: "Min", s: "Seg" },
         a: {
-          title: "Black Friday, eleve o seu negócio",
-          sub1: "Desconto aplicado automaticamente",
-          sub2: "Oferta limitada no plano anual"
+          title: "Oferta Black Friday desbloqueada para si",
+          sub1: "Desconto aplicado automaticamente · Oferta limitada no plano anual",
+          sub2: ""
         },
         b: {
-          title: "A Black Friday está a terminar,\ngarante já o preço mais baixo do ano.",
-          sub1: "Contagem decrescente das últimas 72 horas.",
-          sub2: "Se perder, o preço volta ao original, sem reposição"
+          title: "Últimos 3 dias da Black Friday,\ngarante já o preço mais baixo do ano.",
+          sub1: "Contagem decrescente das últimas 72 horas. Se perder, o preço volta ao original, sem reposição",
+          sub2: ""
+        },
+        preheat: {
+          title: "Black Friday is almost here. Stay tuned!",
+          sub: "Exclusive plan offers are about to be revealed. Stay tuned and unlock limited-time Black Friday perks."
+        },
+        pricing: {
+          badge: "BLACK FRIDAY OFERTA LIMITADA",
+          chip: "Desconto automático · Oferta limitada no plano anual",
+          title: "Oferta Black Friday desbloqueada para si",
+          deal: "Up to 35% off",
+          desc: "Cobertura logística no pico, rastreio automático, interceção de anomalias e páginas de rastreio multilingues. O plano anual fica ainda melhor durante a campanha.",
+          timer: "Tempo até ao fim do evento"
         },
         modal: {
           cta: "Ir para Plano e faturação",
@@ -1339,22 +1990,49 @@
             badge: "ÚLTIMA CHANCE · BFCM2026",
             body1: "O tempo está a esgotar-se: a oferta exclusiva de Black Friday expira em breve.",
             body2: "Quando o evento terminar, os preços voltam ao normal e não haverá um desconto maior este ano."
+          },
+          offer1: {
+            label: "75% de desconto para novos clientes na primeira compra mensal",
+            value: "25%",
+            unit: "de desconto"
+          },
+          offer2: {
+            label: "Pagamento anual na primeira compra",
+            value: "22%",
+            unit: "de desconto"
+          },
+          offer3: {
+            label: "Atualizar / Expandir",
+            value: "+15%",
+            unit: "quota extra"
           }
         }
       },
       es: {
-        offer: { pre: "HASTA", num: "35%", post: "OFF" },
-        timer: "Tiempo hasta que termine",
+        offer: { pre: "Up to", num: "35%", post: "off" },
+        timer: "Tiempo hasta el fin del evento",
         units: { d: "Días", h: "H", m: "Min", s: "Seg" },
         a: {
-          title: "Black Friday, haz crecer tu negocio",
-          sub1: "Descuento aplicado automáticamente",
-          sub2: "Oferta limitada en el plan anual"
+          title: "Oferta de Black Friday desbloqueada para ti",
+          sub1: "Descuento aplicado automáticamente · Oferta limitada en el plan anual",
+          sub2: ""
         },
         b: {
-          title: "El Black Friday está por terminar,\nasegura ya el precio más bajo del año.",
-          sub1: "Cuenta atrás de las últimas 72 horas.",
-          sub2: "Si te lo pierdes, el precio vuelve al original y no se repone"
+          title: "Últimos 3 días de Black Friday,\nasegura ya el precio más bajo del año.",
+          sub1: "Cuenta atrás de las últimas 72 horas. Si te lo pierdes, el precio vuelve al original y no se repone",
+          sub2: ""
+        },
+        preheat: {
+          title: "Black Friday is almost here. Stay tuned!",
+          sub: "Exclusive plan offers are about to be revealed. Stay tuned and unlock limited-time Black Friday perks."
+        },
+        pricing: {
+          badge: "BLACK FRIDAY OFERTA LIMITADA",
+          chip: "Descuento automático · Oferta limitada del plan anual",
+          title: "Oferta de Black Friday desbloqueada para ti",
+          deal: "Up to 35% off",
+          desc: "Cobertura logística en temporada alta, seguimiento automático, interceptación de incidencias y páginas de seguimiento multilingües. El plan anual sale aún mejor durante la oferta.",
+          timer: "Tiempo hasta el fin del evento"
         },
         modal: {
           cta: "Ir a Plan y facturación",
@@ -1374,6 +2052,21 @@
             badge: "ÚLTIMA OPORTUNIDAD · BFCM2026",
             body1: "Se acaba el tiempo: la oferta exclusiva de Black Friday caduca pronto.",
             body2: "Cuando termine el evento, los precios volverán a la normalidad y no habrá un descuento mayor este año."
+          },
+          offer1: {
+            label: "75% de descuento para nuevos clientes en la primera compra mensual",
+            value: "25%",
+            unit: "de descuento"
+          },
+          offer2: {
+            label: "Pago anual en la primera compra",
+            value: "22%",
+            unit: "de descuento"
+          },
+          offer3: {
+            label: "Mejora / Ampliación",
+            value: "+15%",
+            unit: "cuota extra"
           }
         }
       }
@@ -1473,6 +2166,21 @@
       const storedAdapt = localStorage.getItem("bfcm-adapt");
       if (storedAdapt && ["desktop", "tablet", "mobile"].includes(storedAdapt)) initialAdapt = storedAdapt;
     } catch (err) {}
+
+    document.querySelectorAll("[data-preview]").forEach((figure) => {
+      const clone = document.querySelector("#plan-modal .modal-panel").cloneNode(true);
+      clone.removeAttribute("role");
+      clone.removeAttribute("aria-modal");
+      clone.removeAttribute("aria-labelledby");
+      clone.removeAttribute("tabindex");
+      clone.dataset.variant = figure.dataset.preview;
+      clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+      clone.querySelectorAll("button").forEach((node) => {
+        node.tabIndex = -1;
+        node.removeAttribute("data-close");
+      });
+      figure.querySelector(".modal-preview-slot").replaceWith(clone);
+    });
 
     apply(initial);
     applyAdapt(initialAdapt);

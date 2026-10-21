@@ -100,6 +100,31 @@
     joinClose.addEventListener("click", function () { joinDialog.close(); });
   }
 
+  var offerDialog = document.getElementById("offer-dialog");
+  var offerForm = document.getElementById("offer-form");
+  if (offerDialog && typeof offerDialog.showModal === "function") {
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest("[data-offer-open]")) return;
+      event.preventDefault();
+      if (offerForm) offerForm.reset();
+      offerDialog.showModal();
+    });
+    offerDialog.querySelectorAll("[data-offer-close]").forEach(function (button) {
+      button.addEventListener("click", function () { offerDialog.close(); });
+    });
+    offerDialog.addEventListener("click", function (event) {
+      if (event.target === offerDialog) offerDialog.close();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && offerDialog.open) offerDialog.close();
+    });
+  }
+  if (offerForm) {
+    offerForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+    });
+  }
+
   document.addEventListener("click", function (event) {
     if (!event.target.closest(".nav-item-wrap")) closeMenus();
     if (!event.target.closest("[data-lang]")) closeLang();
@@ -266,12 +291,12 @@
     });
   });
 
-  var stats = document.querySelector("#numbers .stats");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var statRollCss = [
-    ":host{position:relative;display:block}",
-    ".stat-roll{position:absolute;top:0;left:0;display:inline-flex;align-items:flex-end;height:1.15em;white-space:nowrap;pointer-events:none;user-select:none}",
+    ":host{position:relative;display:block;font-family:var(--font)}",
+    ".stat-roll{position:absolute;top:0;left:0;display:inline-flex;align-items:flex-end;height:1.15em;white-space:nowrap;pointer-events:none;user-select:none;font-family:var(--font)}",
+    ".stat-digit,.stat-digit-strip,.stat-digit-strip>span,.stat-mark,.stat-suffix{font-family:var(--font)}",
     ".stat-digit{position:relative;flex:0 0 auto;width:1ch;height:1.15em;overflow:clip;line-height:1.15}",
     ".stat-digit-strip{position:absolute;top:0;left:0;display:flex;flex-direction:column;width:100%;margin:0;transform:translateY(0);transition:transform 1400ms cubic-bezier(0.16,0.55,0.24,1);transition-delay:calc(var(--stat-i,0)*90ms + var(--digit-i,0)*45ms)}",
     ".stat-digit-strip>span{display:block;height:1.15em;line-height:1.15;flex:0 0 1.15em}",
@@ -285,7 +310,7 @@
     var values = list.querySelectorAll(".stat-value");
     Array.prototype.forEach.call(values, function (el) {
       var raw = (el.textContent || "").replace(/\s+/g, " ").trim();
-      var match = raw.match(/^(\d+(?:\.\d+)?)(.*)$/);
+      var match = raw.match(/^([\d,]+(?:\.\d+)?)(.*)$/);
       if (!match || el.shadowRoot) return;
       var figure = match[1];
       var suffix = match[2];
@@ -349,25 +374,29 @@
     });
   }
 
-  if (stats && "IntersectionObserver" in window && !reduceMotion) {
-    mountStatRolls(stats);
-    var statsSeen = false;
-    var statsObserver = new IntersectionObserver(function (entries) {
+  function bindStatRoll(list) {
+    if (!list || !("IntersectionObserver" in window) || reduceMotion) return;
+    mountStatRolls(list);
+    var seen = false;
+    var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (!entry.isIntersecting || statsSeen) return;
-        statsSeen = true;
-        statsObserver.disconnect();
+        if (!entry.isIntersecting || seen) return;
+        seen = true;
+        observer.disconnect();
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
-            stats.classList.add("is-in");
-            stats.classList.remove("is-pending");
+            list.classList.add("is-in");
+            list.classList.remove("is-pending");
           });
         });
       });
     }, { threshold: 0.35 });
-    stats.classList.add("is-pending");
-    statsObserver.observe(stats);
+    list.classList.add("is-pending");
+    observer.observe(list);
   }
+
+  bindStatRoll(document.querySelector("#numbers .stats"));
+  bindStatRoll(document.querySelector(".ready-stats"));
 
   var countdown = document.querySelector("[data-countdown]");
   var grid = document.querySelector("[data-countdown-grid]");
@@ -742,17 +771,53 @@
       });
     }
 
+    var bundleTemplate = document.getElementById("price-bundle-template");
     stage.replaceChildren();
     var product = catalog.tracking;
     product.id = "tracking";
     var panel = el("div", "price-panel");
     panel.id = "plans-panel-tracking";
+    panel.classList.add("has-plan-tabs");
+    var activePlan = "";
+    product.cards.forEach(function (card) {
+      if (card.popular && !activePlan) activePlan = card.name;
+    });
+    if (!activePlan && product.cards[0]) activePlan = product.cards[0].name;
+    var planTabs = el("div", "plan-tabs");
+    planTabs.setAttribute("role", "tablist");
+    planTabs.setAttribute("aria-label", "Plans");
     var grid = el("div", "price-cards");
     product.cards.forEach(function (card) {
-      grid.appendChild(card.free ? freeCard(product, card) : paidCard(product, card));
+      var cardEl = card.free ? freeCard(product, card) : paidCard(product, card);
+      var slug = card.name.toLowerCase().replace(/\s+/g, "-");
+      cardEl.id = "plan-card-" + slug;
+      cardEl.classList.toggle("is-plan-on", card.name === activePlan);
+      var tab = el("button", "plan-tab");
+      tab.type = "button";
+      tab.id = "plan-tab-" + slug;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("data-plan", card.name);
+      tab.setAttribute("aria-controls", cardEl.id);
+      tab.setAttribute("aria-selected", card.name === activePlan ? "true" : "false");
+      tab.textContent = card.name;
+      planTabs.appendChild(tab);
+      grid.appendChild(cardEl);
     });
+    planTabs.addEventListener("click", function (event) {
+      var tab = event.target.closest("[data-plan]");
+      if (!tab || !planTabs.contains(tab)) return;
+      activePlan = tab.getAttribute("data-plan");
+      planTabs.querySelectorAll("[data-plan]").forEach(function (item) {
+        item.setAttribute("aria-selected", item.getAttribute("data-plan") === activePlan ? "true" : "false");
+      });
+      grid.querySelectorAll(".price-card").forEach(function (cardEl) {
+        cardEl.classList.toggle("is-plan-on", cardEl.getAttribute("data-card") === activePlan);
+      });
+    });
+    panel.appendChild(planTabs);
     panel.appendChild(grid);
     if (product.custom) panel.appendChild(customBar(product.custom));
+    if (bundleTemplate) panel.appendChild(bundleTemplate.content);
     stage.appendChild(panel);
     syncProduct("tracking", false);
 
