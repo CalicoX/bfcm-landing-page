@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BFCM Pricing Banner</title>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <style>
+    :root {
+      --page: #f1f1f1;
+      --text: #303030;
+      --font: Inter, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .chrome,
+    .page {
+      width: min(1080px, calc(100% - 32px));
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .chrome { margin-top: 40px; }
+    .page { margin-top: 20px; padding-bottom: 72px; }
+    .page[data-adapt="tablet"] { width: min(768px, calc(100% - 32px)); }
+    .page[data-adapt="mobile"] { width: min(390px, calc(100% - 32px)); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 16px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      width: max-content;
+      max-width: 100%;
+      margin: 0;
+      padding: 4px;
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tabs button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #616161;
+      font-family: inherit;
+      font-weight: 550;
+      font-size: 13px;
+      line-height: 20px;
+      flex: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tabs button:hover:not([aria-selected="true"]) {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text);
+    }
+
+    .tabs button[aria-selected="true"] {
+      background: #1c1c1c;
+      color: #fff;
+    }
+
+    .tabs button:focus-visible {
+      outline: 2px solid #1c1c1c;
+      outline-offset: 2px;
+    }
+
+    .adapt-size {
+      margin-left: 6px;
+      font-weight: 450;
+      font-size: 12px;
+      opacity: 0.55;
+    }
+
+    .tabs button[aria-selected="true"] .adapt-size { opacity: 0.78; }
+
+    .page-link {
+      color: #616161;
+      font-size: 13px;
+      font-weight: 550;
+      line-height: 20px;
+      text-decoration: none;
+    }
+
+    .page-link:hover { color: #1c1c1c; }
+
+    .pbanner {
+      container-type: inline-size;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #fff0bf;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #1c1c1c 0%, #333333 100%);
+    }
+
+    .glow {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-left {
+      width: 780px;
+      height: 780px;
+      left: -340px;
+      top: -300px;
+    }
+
+    .glow-center {
+      width: 240px;
+      height: 240px;
+      left: 42%;
+      top: -30px;
+    }
+
+    .watermark {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: -3.2cqw;
+      transform: translateX(-50%);
+      margin: 0;
+      font-family: Kameron, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: 19.035cqw;
+      line-height: 1.2;
+      letter-spacing: -0.037em;
+      white-space: nowrap;
+      color: transparent;
+      -webkit-text-stroke: 0.22cqw #ffffa2;
+      opacity: 0.06;
+      pointer-events: none;
+      user-select: none;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 18.6%, transparent 71.5%);
+    }
+
+    .pbanner-row {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 25px;
+    }
+
+    .copy {
+      min-width: 0;
+      max-width: 672px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pills,
+    .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-row { gap: 12px; padding-top: 4px; }
+
+    .badge,
+    .chip,
+    .deal {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .badge {
+      gap: 4px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ffb657 0%, #ffe99d 50%, #db9350 100%);
+      color: #261a00;
+      font-weight: 800;
+      font-size: 11px;
+      line-height: 16.5px;
+      letter-spacing: 0.275px;
+      text-transform: uppercase;
+    }
+
+    .badge img { width: 8.4px; height: 10.5px; }
+
+    .chip {
+      padding: 3px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #dbeafe;
+      font-size: 11px;
+      line-height: 16.5px;
+      font-weight: 450;
+    }
+
+    .title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 36px;
+      letter-spacing: -0.8px;
+      background: linear-gradient(90deg, #ffffff 0%, #ffb657 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .deal {
+      gap: 4px;
+      min-height: 20px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: #ffd6a4;
+      color: #5e4200;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 550;
+    }
+
+    .deal img { width: 20px; height: 20px; flex: none; }
+
+    .desc {
+      margin: 0;
+      max-width: 760px;
+      color: rgba(219, 234, 254, 0.9);
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 21px;
+    }
+
+    .timer-card {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(2px);
+    }
+
+    .timer-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fcd34d;
+      font-size: 11px;
+      line-height: 16.5px;
+      font-weight: 450;
+      white-space: nowrap;
+    }
+
+    .timer-label img { width: 12px; height: 12px; }
+
+    .ticks {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tick {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      color: #fff;
+      font-weight: 800;
+      font-size: 22px;
+      line-height: 33px;
+      letter-spacing: -0.55px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tick-sec {
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+    }
+
+    .unit span {
+      color: #bfdbfe;
+      font-size: 10px;
+      line-height: 13px;
+      font-weight: 450;
+    }
+
+    .colon {
+      align-self: flex-start;
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .page:not([data-adapt="desktop"]) .pbanner-row,
+      .page[data-adapt="tablet"] .pbanner-row,
+      .page[data-adapt="mobile"] .pbanner-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .page[data-adapt="tablet"] .timer-card,
+      .page[data-adapt="mobile"] .timer-card,
+      .page:not([data-adapt="desktop"]) .timer-card {
+        align-items: flex-start;
+        width: max-content;
+        max-width: 100%;
+      }
+    }
+
+    .page[data-adapt="desktop"] .pbanner-row {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .page[data-adapt="tablet"] .pbanner-row,
+    .page[data-adapt="mobile"] .pbanner-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .page[data-adapt="tablet"] .timer-card,
+    .page[data-adapt="mobile"] .timer-card {
+      align-items: flex-start;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .page[data-adapt="mobile"] .title { font-size: 22px; line-height: 30px; }
+    .page[data-adapt="mobile"] .pbanner-row { padding: 18px; }
+    .page[data-adapt="mobile"] .tick { width: 44px; height: 44px; font-size: 20px; }
+  </style>
+</head>
+<body>
+  <header class="chrome">
+    <h1 class="sr-only">Pricing banner</h1>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Language">
+        <button type="button" role="tab" data-lang="zh" aria-selected="true">中文</button>
+        <button type="button" role="tab" data-lang="en" aria-selected="false" tabindex="-1">English</button>
+        <button type="button" role="tab" data-lang="fr" aria-selected="false" tabindex="-1">Français</button>
+        <button type="button" role="tab" data-lang="pt" aria-selected="false" tabindex="-1">Português</button>
+        <button type="button" role="tab" data-lang="es" aria-selected="false" tabindex="-1">Español</button>
+      </div>
+      <div class="tabs" role="tablist" aria-label="适配">
+        <button type="button" role="tab" data-adapt="desktop" aria-selected="true">桌面<span class="adapt-size">1080</span></button>
+        <button type="button" role="tab" data-adapt="tablet" aria-selected="false" tabindex="-1">平板<span class="adapt-size">768</span></button>
+        <button type="button" role="tab" data-adapt="mobile" aria-selected="false" tabindex="-1">手机<span class="adapt-size">390</span></button>
+      </div>
+      <a class="page-link" href="banner.html">Dashboard banner</a>
+    </div>
+  </header>
+
+  <main class="page" data-adapt="desktop">
+    <article class="pbanner">
+      <img class="glow glow-left" src="assets/glow-left.svg" alt="">
+      <img class="glow glow-center" src="assets/glow-center.svg" alt="">
+      <p class="watermark" aria-hidden="true">BFCM2026</p>
+      <div class="pbanner-row">
+        <div class="copy">
+          <div class="pills">
+            <span class="badge">
+              <img src="assets/pricing-bolt.svg" alt="">
+              <span data-t="badge"></span>
+            </span>
+            <span class="chip" data-t="chip"></span>
+          </div>
+          <div class="title-row">
+            <h2 class="title" data-t="title"></h2>
+            <span class="deal">
+              <img src="assets/pricing-badge-icon.svg" alt="">
+              <span data-t="deal"></span>
+            </span>
+          </div>
+          <p class="desc" data-t="desc"></p>
+        </div>
+        <div class="timer-card">
+          <div class="timer-label">
+            <img src="assets/pricing-clock.svg" alt="">
+            <span data-t="timer"></span>
+          </div>
+          <div class="ticks">
+            <div class="unit"><b class="tick" data-part="d">47</b><span data-t="units.d"></span></div>
+            <span class="colon">:</span>
+            <div class="unit"><b class="tick" data-part="h">04</b><span data-t="units.h"></span></div>
+            <span class="colon">:</span>
+            <div class="unit"><b class="tick" data-part="m">34</b><span data-t="units.m"></span></div>
+            <span class="colon">:</span>
+            <div class="unit"><b class="tick tick-sec" data-part="s">28</b><span data-t="units.s"></span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    const copy = {
+      zh: {
+        badge: "BLACK FRIDAY 黑五限时优惠",
+        chip: "优惠自动应用 · 年付套餐限时特惠",
+        title: "黑五限时优惠，专属折扣已为您解锁",
+        deal: "Up to 35% off",
+        desc: "全球峰值物流护航，自动化订单追踪、异常拦截与多语言品牌查询页。活动期间切换年付方案更超值",
+        timer: "距活动结束仅剩",
+        units: { d: "天", h: "时", m: "分", s: "秒" }
+      },
+      en: {
+        badge: "BLACK FRIDAY LIMITED OFFER",
+        chip: "Applied automatically · Annual plan limited offer",
+        title: "Black Friday offer unlocked for you",
+        deal: "Up to 35% off",
+        desc: "Peak-season logistics coverage, automated tracking, exception interception, and multilingual branded tracking pages. Annual plans are an even better deal during the event.",
+        timer: "Time left until the event ends",
+        units: { d: "Days", h: "Hrs", m: "Min", s: "Sec" }
+      },
+      fr: {
+        badge: "BLACK FRIDAY OFFRE LIMITÉE",
+        chip: "Remise automatique · Offre limitée au plan annuel",
+        title: "Offre Black Friday débloquée pour vous",
+        deal: "Up to 35% off",
+        desc: "Couverture logistique en période de pointe, suivi automatisé, interception des anomalies et pages de suivi multilingues. L'abonnement annuel est encore plus avantageux pendant l'offre.",
+        timer: "Temps restant avant la fin",
+        units: { d: "Jours", h: "H", m: "Min", s: "Sec" }
+      },
+      pt: {
+        badge: "BLACK FRIDAY OFERTA LIMITADA",
+        chip: "Desconto automático · Oferta limitada no plano anual",
+        title: "Oferta Black Friday desbloqueada para si",
+        deal: "Up to 35% off",
+        desc: "Cobertura logística no pico, rastreio automático, interceção de anomalias e páginas de rastreio multilingues. O plano anual fica ainda melhor durante a campanha.",
+        timer: "Tempo restante até ao fim",
+        units: { d: "Dias", h: "H", m: "Min", s: "Seg" }
+      },
+      es: {
+        badge: "BLACK FRIDAY OFERTA LIMITADA",
+        chip: "Descuento automático · Oferta limitada del plan anual",
+        title: "Oferta de Black Friday desbloqueada para ti",
+        deal: "Up to 35% off",
+        desc: "Cobertura logística en temporada alta, seguimiento automático, interceptación de incidencias y páginas de seguimiento multilingües. El plan anual sale aún mejor durante la oferta.",
+        timer: "Tiempo restante hasta el final",
+        units: { d: "Días", h: "H", m: "Min", s: "Seg" }
+      }
+    };
+
+    const htmlLang = { zh: "zh-Hans", en: "en", fr: "fr", pt: "pt", es: "es" };
+    const tabs = [...document.querySelectorAll("[data-lang]")];
+    const adaptTabs = [...document.querySelectorAll("[data-adapt]")];
+    const stage = document.querySelector(".page");
+
+    function lookup(obj, path) {
+      return path.split(".").reduce((value, key) => value[key], obj);
+    }
+
+    function apply(lang) {
+      const t = copy[lang];
+      document.documentElement.lang = htmlLang[lang];
+      document.querySelectorAll("[data-t]").forEach((node) => {
+        node.textContent = lookup(t, node.dataset.t);
+      });
+      tabs.forEach((tab) => {
+        const on = tab.dataset.lang === lang;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+      });
+      try { localStorage.setItem("bfcm-lang", lang); } catch (err) {}
+    }
+
+    function applyAdapt(adapt) {
+      stage.dataset.adapt = adapt;
+      adaptTabs.forEach((tab) => {
+        const on = tab.dataset.adapt === adapt;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+      });
+      try { localStorage.setItem("bfcm-pricing-adapt", adapt); } catch (err) {}
+    }
+
+    function bindTabs(list, select) {
+      list.forEach((tab) => tab.addEventListener("click", () => select(tab)));
+      list[0].parentElement.addEventListener("keydown", (event) => {
+        const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+        if (!keys.includes(event.key)) return;
+        event.preventDefault();
+        const current = list.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+        let next = current;
+        if (event.key === "ArrowRight") next = (current + 1) % list.length;
+        if (event.key === "ArrowLeft") next = (current - 1 + list.length) % list.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = list.length - 1;
+        list[next].focus();
+        select(list[next]);
+      });
+    }
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    let deadline;
+    try {
+      const saved = Number(sessionStorage.getItem("bfcm-pricing-deadline"));
+      deadline = saved || 0;
+      if (!deadline) {
+        deadline = Date.now() + (((47 * 24 + 4) * 60 + 34) * 60 + 28) * 1000;
+        sessionStorage.setItem("bfcm-pricing-deadline", String(deadline));
+      }
+    } catch (err) {
+      deadline = Date.now() + (((47 * 24 + 4) * 60 + 34) * 60 + 28) * 1000;
+    }
+
+    function tick() {
+      const total = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+      const parts = {
+        d: Math.floor(total / 86400),
+        h: Math.floor((total % 86400) / 3600),
+        m: Math.floor((total % 3600) / 60),
+        s: total % 60
+      };
+      document.querySelectorAll("[data-part]").forEach((node) => {
+        node.textContent = pad(parts[node.dataset.part]);
+      });
+    }
+
+    bindTabs(tabs, (tab) => apply(tab.dataset.lang));
+    bindTabs(adaptTabs, (tab) => applyAdapt(tab.dataset.adapt));
+
+    let initial = "zh";
+    let initialAdapt = "desktop";
+    try {
+      const stored = localStorage.getItem("bfcm-lang");
+      if (stored && copy[stored]) initial = stored;
+      const storedAdapt = localStorage.getItem("bfcm-pricing-adapt");
+      if (storedAdapt && ["desktop", "tablet", "mobile"].includes(storedAdapt)) initialAdapt = storedAdapt;
+    } catch (err) {}
+
+    apply(initial);
+    applyAdapt(initialAdapt);
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
