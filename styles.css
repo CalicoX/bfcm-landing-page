@@ -494,31 +494,395 @@ a { color: inherit; }
 .hero-visual {
   margin: 0;
   width: 100%;
-  align-self: end;
+  align-self: center;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
+  padding: 12px 0 48px;
 }
 
-.hero-visual img {
+.hero-track {
+  --os-mute: #6b7380;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: max-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: -36px;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.hero-track-mail {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 392px;
+  padding: 20px 24px 20px;
+  color: #0f172a;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 2px 5px rgba(15, 23, 42, 0.05),
+    0 24px 52px -16px rgba(15, 23, 42, 0.3);
+}
+
+.hero-track-mail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+.hero-track-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex: 0 0 42px;
+  object-fit: cover;
+  object-position: center 18%;
   display: block;
-  width: 85%;
-  height: auto;
-  max-width: none;
-  max-height: none;
-  object-fit: contain;
-  object-position: center bottom;
+  background: #e2e8f0;
 }
 
-@media (min-width: 901px) {
-  .hero-visual img {
-    width: 85%;
-    height: auto;
-    max-width: none;
-    max-height: none;
-    object-fit: contain;
-    object-position: center bottom;
-    flex: none;
+.hero-track-mail-head > div {
+  min-width: 0;
+}
+
+.hero-track-mail-head span {
+  display: block;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+  font-weight: 500;
+}
+
+.hero-track-mail h2 {
+  margin: 0 auto 14px;
+  max-width: 13em;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.22;
+  color: #0f172a;
+  text-align: center;
+}
+
+.hero-track-hi,
+.hero-track-body {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-track-hi {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.hero-track-body {
+  max-width: 26em;
+  margin-bottom: 14px;
+  padding: 0 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.hero-track-cta {
+  position: relative;
+  display: flex;
+  align-self: center;
+  width: max-content;
+  align-items: center;
+  justify-content: center;
+  min-width: 156px;
+  height: 40px;
+  padding: 0 22px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.hero-track-cta i {
+  position: absolute;
+  right: -4px;
+  bottom: -8px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(15, 23, 42, 0.25));
+}
+
+.hero-track-mail dl {
+  margin: 0 auto;
+  width: max-content;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.hero-track-mail dl div { display: contents; }
+.hero-track-mail dt { margin: 0; font-weight: 500; }
+.hero-track-mail dt::after { content: ":"; }
+.hero-track-mail dd { margin: 0; font-weight: 650; color: #0f172a; }
+
+.hero-track-page {
+  position: relative;
+  z-index: 2;
+  width: 400px;
+  max-width: none;
+  margin-left: -40px;
+  border-radius: 18px;
+  box-shadow:
+    0 2px 5px rgba(15, 23, 42, 0.05),
+    0 24px 52px -16px rgba(15, 23, 42, 0.3);
+}
+
+.hero-track-browser {
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.16));
+  -webkit-backdrop-filter: blur(56px) saturate(1.8);
+  backdrop-filter: blur(56px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.hero-track-chrome {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.hero-track-chrome > span:nth-child(-n + 3) {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+}
+
+.hero-track-chrome > span:nth-child(1) { background: #ff5f57; }
+.hero-track-chrome > span:nth-child(2) { background: #febc2e; }
+.hero-track-chrome > span:nth-child(3) { background: #28c840; }
+
+.hero-track-url {
+  margin-left: 6px;
+  flex: 1;
+  height: 22px;
+  max-width: 220px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  color: #71717a;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+}
+
+.hero-track-url svg {
+  width: 10px;
+  height: 10px;
+  opacity: 0.45;
+  flex: none;
+}
+
+.hero-track-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.hero-track-actions i {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.hero-track-body-page {
+  padding: 12px 14px 14px;
+  color: #0f172a;
+}
+
+.hero-track-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 2px 0 14px;
+}
+
+.hero-track-tabs span {
+  display: inline-flex;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #64748b;
+  background: #fff;
+}
+
+.hero-track-tabs span.is-on {
+  color: #1d4ed8;
+  border-color: transparent;
+  background: #dbeafe;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+}
+
+.hero-track-status h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.hero-track-progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  position: relative;
+  margin: 0 4px;
+}
+
+.hero-track-progress::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, #38bdf8 0%, #2563eb 55%, #8b5cf6 100%);
+  transform: translateY(-50%);
+}
+
+.hero-track-progress i {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #e2e8f0;
+  color: #94a3b8;
+}
+
+.hero-track-progress i.is-on {
+  background: #2563eb;
+  color: #f4f7fb;
+}
+
+.hero-track-progress i.is-now {
+  background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
+}
+
+.hero-track-progress svg {
+  width: 11px;
+  height: 11px;
+}
+
+.hero-track-labels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 6px 0 10px;
+  font-size: 8px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--os-mute);
+  text-align: center;
+}
+
+.hero-track-carrier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  font-size: 12px;
+}
+
+.hero-track-carrier b { font-weight: 650; }
+
+.hero-track-carrier span {
+  color: var(--os-mute);
+  font-variant-numeric: tabular-nums;
+  filter: blur(6px);
+  user-select: none;
+}
+
+.hero-track-status ul {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.hero-track-status li strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.hero-track-status li:first-child strong { color: #2563eb; }
+
+.hero-track-status li span {
+  display: block;
+  margin-top: 1px;
+  font-size: 11px;
+  color: var(--os-mute);
+}
+
+@media (max-width: 1280px) {
+  .hero-track {
+    transform: scale(0.9);
+    transform-origin: right center;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-visual {
+    justify-content: center;
+    padding-bottom: 8px;
+  }
+
+  .hero-track {
+    transform: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .hero-track-mail,
+  .hero-track-page {
+    width: 100%;
+    margin-left: 0;
   }
 }
 
